@@ -6,8 +6,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>تواصلنا</title>
 
@@ -102,10 +101,6 @@ header h1 {
     background: #dc2626;
 }
 
-#logoutBtn:hover {
-    background: #b91c1c;
-}
-
 textarea {
     width: 100%;
     box-sizing: border-box;
@@ -163,9 +158,13 @@ textarea {
     margin-top: 15px;
     border-top: 1px solid #eee;
     padding-top: 12px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.like-btn {
+.like-btn,
+.comment-btn {
     background: #f2f4f8;
     color: #333;
     border: none;
@@ -175,13 +174,85 @@ textarea {
     font-size: 16px;
 }
 
-.like-btn:hover {
+.like-btn:hover,
+.comment-btn:hover {
     background: #e5e7eb;
 }
 
 .like-btn.liked {
     background: #fee2e2;
     color: #dc2626;
+}
+
+.comments-box {
+    display: none;
+    margin-top: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.comment-input {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 80px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    resize: vertical;
+}
+
+.comment-publish {
+    margin-top: 8px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.comment-message {
+    margin-top: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.comments-list {
+    margin-top: 15px;
+}
+
+.comment {
+    background: #f7f8fa;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.comment-user {
+    font-weight: bold;
+    color: #2563eb;
+    margin-bottom: 6px;
+}
+
+.comment-content {
+    line-height: 1.7;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.comment-date {
+    margin-top: 6px;
+    color: #888;
+    font-size: 12px;
+}
+
+.empty-comments {
+    color: #888;
+    text-align: center;
+    padding: 10px;
 }
 
 .empty-posts {
@@ -209,8 +280,6 @@ footer {
 
 <div class="container">
 
-<!-- منطقة الزائر -->
-
 <div id="guestArea">
 
 ```
@@ -230,8 +299,6 @@ footer {
 ```
 
 </div>
-
-<!-- منطقة المستخدم -->
 
 <div id="userArea">
 
@@ -302,27 +369,19 @@ footer {
 
 <script type="module">
 
-
 import { initializeApp }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
 import {
-
     getAuth,
     onAuthStateChanged,
     signOut,
     setPersistence,
     browserLocalPersistence
-
 }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-
 import {
-
     getFirestore,
     collection,
     addDoc,
@@ -335,9 +394,7 @@ import {
     deleteDoc,
     getDoc,
     increment
-
 }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -363,10 +420,8 @@ const firebaseConfig = {
 const app =
     initializeApp(firebaseConfig);
 
-
 const auth =
     getAuth(app);
-
 
 const db =
     getFirestore(app);
@@ -375,53 +430,46 @@ const db =
 const guestArea =
     document.getElementById("guestArea");
 
-
 const userArea =
     document.getElementById("userArea");
-
 
 const userName =
     document.getElementById("userName");
 
-
 const userEmail =
     document.getElementById("userEmail");
-
 
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-
 const postInput =
     document.getElementById("postInput");
-
 
 const publishBtn =
     document.getElementById("publishBtn");
 
-
 const postMessage =
     document.getElementById("postMessage");
-
 
 const posts =
     document.getElementById("posts");
 
 
-/*
-    أهم جزء:
-    حفظ تسجيل الدخول على الجهاز.
-*/
+/* حفظ تسجيل الدخول */
 
-await setPersistence(
+setPersistence(
     auth,
     browserLocalPersistence
-);
+)
+.catch(error => {
+    console.error(
+        "Persistence Error:",
+        error
+    );
+});
 
 
-/*
-    التأكد من حالة تسجيل الدخول.
-*/
+/* حالة المستخدم */
 
 onAuthStateChanged(
     auth,
@@ -429,31 +477,20 @@ onAuthStateChanged(
 
         if (user) {
 
-            /*
-                المستخدم مسجل الدخول
-            */
-
             guestArea.style.display =
                 "none";
 
             userArea.style.display =
                 "block";
 
-
             userName.textContent =
                 user.displayName ||
                 user.email.split("@")[0];
 
-
             userEmail.textContent =
                 user.email;
 
-
         } else {
-
-            /*
-                المستخدم غير مسجل
-            */
 
             guestArea.style.display =
                 "block";
@@ -467,9 +504,7 @@ onAuthStateChanged(
 );
 
 
-/*
-    تسجيل الخروج
-*/
+/* تسجيل الخروج */
 
 logoutBtn.addEventListener(
     "click",
@@ -497,9 +532,7 @@ logoutBtn.addEventListener(
 );
 
 
-/*
-    نشر منشور
-*/
+/* نشر منشور */
 
 publishBtn.addEventListener(
     "click",
@@ -507,7 +540,6 @@ publishBtn.addEventListener(
 
         const user =
             auth.currentUser;
-
 
         const content =
             postInput.value.trim();
@@ -574,7 +606,6 @@ publishBtn.addEventListener(
 
             postInput.value = "";
 
-
             postMessage.style.color =
                 "green";
 
@@ -617,9 +648,7 @@ publishBtn.addEventListener(
 );
 
 
-/*
-    الإعجاب
-*/
+/* الإعجاب */
 
 async function toggleLike(
     postId,
@@ -737,9 +766,296 @@ async function toggleLike(
 }
 
 
-/*
-    تحميل المنشورات
-*/
+/* إضافة تعليق */
+
+async function addComment(
+    postId,
+    input,
+    message,
+    publishButton
+) {
+
+    const user =
+        auth.currentUser;
+
+
+    if (!user) {
+
+        alert(
+            "يجب تسجيل الدخول لكتابة تعليق."
+        );
+
+        return;
+
+    }
+
+
+    const commentText =
+        input.value.trim();
+
+
+    if (!commentText) {
+
+        message.style.color =
+            "red";
+
+        message.textContent =
+            "اكتب تعليقك أولًا.";
+
+        return;
+
+    }
+
+
+    try {
+
+        publishButton.disabled =
+            true;
+
+        publishButton.textContent =
+            "جارٍ النشر...";
+
+
+        const name =
+            user.displayName ||
+            user.email.split("@")[0];
+
+
+        await addDoc(
+
+            collection(
+                db,
+                "posts",
+                postId,
+                "comments"
+            ),
+
+            {
+
+                content:
+                    commentText,
+
+                userId:
+                    user.uid,
+
+                userName:
+                    name,
+
+                userEmail:
+                    user.email,
+
+                createdAt:
+                    serverTimestamp()
+
+            }
+
+        );
+
+
+        input.value = "";
+
+        message.style.color =
+            "green";
+
+        message.textContent =
+            "تم نشر التعليق بنجاح 💬";
+
+
+        setTimeout(
+            () => {
+
+                message.textContent =
+                    "";
+
+            },
+            2000
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Comment Error:",
+            error
+        );
+
+        message.style.color =
+            "red";
+
+        message.textContent =
+            "حدث خطأ أثناء نشر التعليق.";
+
+    } finally {
+
+        publishButton.disabled =
+            false;
+
+        publishButton.textContent =
+            "نشر التعليق";
+
+    }
+
+}
+
+
+/* عرض تعليقات المنشور */
+
+function loadComments(
+    postId,
+    commentsList
+) {
+
+    const commentsQuery =
+        query(
+
+            collection(
+                db,
+                "posts",
+                postId,
+                "comments"
+            ),
+
+            orderBy(
+                "createdAt",
+                "asc"
+            )
+
+        );
+
+
+    onSnapshot(
+
+        commentsQuery,
+
+        (snapshot) => {
+
+            commentsList.innerHTML =
+                "";
+
+
+            if (snapshot.empty) {
+
+                commentsList.innerHTML =
+                    '<div class="empty-comments">لا توجد تعليقات حتى الآن 💬</div>';
+
+                return;
+
+            }
+
+
+            snapshot.forEach(
+                (commentDoc) => {
+
+                    const data =
+                        commentDoc.data();
+
+
+                    const comment =
+                        document.createElement(
+                            "div"
+                        );
+
+                    comment.className =
+                        "comment";
+
+
+                    const commentUser =
+                        document.createElement(
+                            "div"
+                        );
+
+                    commentUser.className =
+                        "comment-user";
+
+
+                    commentUser.textContent =
+                        "👤 " +
+                        (
+                            data.userName ||
+                            "مستخدم"
+                        );
+
+
+                    const commentContent =
+                        document.createElement(
+                            "div"
+                        );
+
+                    commentContent.className =
+                        "comment-content";
+
+
+                    commentContent.textContent =
+                        data.content || "";
+
+
+                    const commentDate =
+                        document.createElement(
+                            "div"
+                        );
+
+                    commentDate.className =
+                        "comment-date";
+
+
+                    if (data.createdAt) {
+
+                        commentDate.textContent =
+                            "📅 " +
+                            data.createdAt
+                                .toDate()
+                                .toLocaleString(
+                                    "ar-EG"
+                                );
+
+                    } else {
+
+                        commentDate.textContent =
+                            "📅 تم النشر الآن";
+
+                    }
+
+
+                    comment.appendChild(
+                        commentUser
+                    );
+
+                    comment.appendChild(
+                        commentContent
+                    );
+
+                    comment.appendChild(
+                        commentDate
+                    );
+
+
+                    commentsList.appendChild(
+                        comment
+                    );
+
+                }
+            );
+
+        },
+
+        (error) => {
+
+            console.error(
+                "Comments Error:",
+                error
+            );
+
+            commentsList.innerHTML =
+                '<div class="empty-comments">تعذر تحميل التعليقات.</div>';
+
+        }
+
+    );
+
+}
+
+
+/* تحميل المنشورات */
 
 const postsQuery =
     query(
@@ -792,6 +1108,8 @@ onSnapshot(
                 "post";
 
 
+            /* اسم صاحب المنشور */
+
             const name =
                 document.createElement(
                     "div"
@@ -799,7 +1117,6 @@ onSnapshot(
 
             name.className =
                 "post-user";
-
 
             name.textContent =
                 "👤 " +
@@ -809,6 +1126,8 @@ onSnapshot(
                 );
 
 
+            /* محتوى المنشور */
+
             const content =
                 document.createElement(
                     "div"
@@ -817,10 +1136,11 @@ onSnapshot(
             content.className =
                 "post-content";
 
-
             content.textContent =
                 data.content || "";
 
+
+            /* التاريخ */
 
             const date =
                 document.createElement(
@@ -833,15 +1153,13 @@ onSnapshot(
 
             if (data.createdAt) {
 
-                const postDate =
-                    data.createdAt.toDate();
-
-
                 date.textContent =
                     "📅 " +
-                    postDate.toLocaleString(
-                        "ar-EG"
-                    );
+                    data.createdAt
+                        .toDate()
+                        .toLocaleString(
+                            "ar-EG"
+                        );
 
             } else {
 
@@ -850,6 +1168,8 @@ onSnapshot(
 
             }
 
+
+            /* أزرار المنشور */
 
             const actions =
                 document.createElement(
@@ -860,11 +1180,12 @@ onSnapshot(
                 "post-actions";
 
 
+            /* زر اللايك */
+
             const likeButton =
                 document.createElement(
                     "button"
                 );
-
 
             likeButton.className =
                 "like-btn";
@@ -880,6 +1201,7 @@ onSnapshot(
 
                     const likeDoc =
                         await getDoc(
+
                             doc(
                                 db,
                                 "posts",
@@ -887,12 +1209,12 @@ onSnapshot(
                                 "likes",
                                 currentUser.uid
                             )
+
                         );
 
 
                     userLiked =
                         likeDoc.exists();
-
 
                 } catch (error) {
 
@@ -937,8 +1259,156 @@ onSnapshot(
             );
 
 
+            /* زر التعليقات */
+
+            const commentButton =
+                document.createElement(
+                    "button"
+                );
+
+            commentButton.className =
+                "comment-btn";
+
+            commentButton.textContent =
+                "💬 التعليقات";
+
+
+            /* صندوق التعليقات */
+
+            const commentsBox =
+                document.createElement(
+                    "div"
+                );
+
+            commentsBox.className =
+                "comments-box";
+
+
+            /* مربع كتابة التعليق */
+
+            const commentInput =
+                document.createElement(
+                    "textarea"
+                );
+
+            commentInput.className =
+                "comment-input";
+
+            commentInput.maxLength =
+                300;
+
+            commentInput.placeholder =
+                "اكتب تعليقك هنا...";
+
+
+            /* زر نشر التعليق */
+
+            const commentPublish =
+                document.createElement(
+                    "button"
+                );
+
+            commentPublish.className =
+                "comment-publish";
+
+            commentPublish.textContent =
+                "نشر التعليق";
+
+
+            /* رسالة التعليق */
+
+            const commentMessage =
+                document.createElement(
+                    "div"
+                );
+
+            commentMessage.className =
+                "comment-message";
+
+
+            /* قائمة التعليقات */
+
+            const commentsList =
+                document.createElement(
+                    "div"
+                );
+
+            commentsList.className =
+                "comments-list";
+
+
+            /* فتح وإغلاق التعليقات */
+
+            commentButton.addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        commentsBox.style.display ===
+                        "block"
+                    ) {
+
+                        commentsBox.style.display =
+                            "none";
+
+                    } else {
+
+                        commentsBox.style.display =
+                            "block";
+
+                        loadComments(
+                            postDoc.id,
+                            commentsList
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /* نشر التعليق */
+
+            commentPublish.addEventListener(
+                "click",
+                () => {
+
+                    addComment(
+                        postDoc.id,
+                        commentInput,
+                        commentMessage,
+                        commentPublish
+                    );
+
+                }
+            );
+
+
+            /* تجميع العناصر */
+
             actions.appendChild(
                 likeButton
+            );
+
+            actions.appendChild(
+                commentButton
+            );
+
+
+            commentsBox.appendChild(
+                commentInput
+            );
+
+            commentsBox.appendChild(
+                commentPublish
+            );
+
+            commentsBox.appendChild(
+                commentMessage
+            );
+
+            commentsBox.appendChild(
+                commentsList
             );
 
 
@@ -956,6 +1426,10 @@ onSnapshot(
 
             post.appendChild(
                 actions
+            );
+
+            post.appendChild(
+                commentsBox
             );
 
 
@@ -977,7 +1451,6 @@ onSnapshot(
     }
 
 );
-
 
 </script>
 
