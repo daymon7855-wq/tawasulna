@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
 <title>تواصلنا</title>
 
 <style>
@@ -154,17 +166,20 @@
         padding-top: 12px;
     }
 
-    .like-btn {
+    .like-btn,
+    .comment-login-btn {
         background: #f2f4f8;
         color: #333;
         border: none;
         padding: 10px 16px;
         border-radius: 10px;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 15px;
+        margin-left: 5px;
     }
 
-    .like-btn:hover {
+    .like-btn:hover,
+    .comment-login-btn:hover {
         background: #e5e7eb;
     }
 
@@ -173,8 +188,6 @@
         color: #dc2626;
     }
 
-    /* التعليقات */
-
     .comments-section {
         margin-top: 18px;
         padding-top: 15px;
@@ -182,26 +195,23 @@
     }
 
     .comments-title {
-        font-size: 18px;
+        font-size: 17px;
         margin-bottom: 12px;
     }
 
     .comment-form {
         display: flex;
         gap: 8px;
-        margin-bottom: 15px;
+        margin-top: 12px;
     }
 
     .comment-input {
         flex: 1;
-        min-height: 45px;
-        max-height: 120px;
-        resize: vertical;
-        padding: 10px;
+        padding: 11px;
         border: 1px solid #ccc;
         border-radius: 10px;
-        font-family: Arial, sans-serif;
         font-size: 15px;
+        font-family: Arial, sans-serif;
         box-sizing: border-box;
     }
 
@@ -209,16 +219,10 @@
         background: #2563eb;
         color: white;
         border: none;
+        padding: 10px 16px;
         border-radius: 10px;
-        padding: 10px 15px;
         cursor: pointer;
-        font-size: 14px;
         white-space: nowrap;
-        height: 45px;
-    }
-
-    .comment-btn:hover {
-        background: #1d4ed8;
     }
 
     .comment-btn:disabled {
@@ -226,45 +230,37 @@
         cursor: not-allowed;
     }
 
-    .login-comment {
-        text-align: center;
-        background: #f8fafc;
-        padding: 12px;
-        border-radius: 10px;
-        color: #666;
-        margin-bottom: 15px;
-    }
-
     .comment {
-        background: #f8fafc;
+        background: #f7f8fa;
         padding: 12px;
         border-radius: 10px;
-        margin-bottom: 10px;
+        margin-top: 10px;
     }
 
     .comment-user {
-        font-weight: bold;
         color: #2563eb;
+        font-weight: bold;
+        font-size: 14px;
         margin-bottom: 5px;
     }
 
     .comment-content {
         font-size: 15px;
-        line-height: 1.7;
+        line-height: 1.6;
         white-space: pre-wrap;
         word-break: break-word;
     }
 
     .comment-date {
-        color: #999;
+        color: #888;
         font-size: 12px;
-        margin-top: 6px;
+        margin-top: 5px;
     }
 
-    .no-comments {
+    .comments-empty {
         color: #888;
-        text-align: center;
         font-size: 14px;
+        text-align: center;
         padding: 10px;
     }
 
@@ -283,6 +279,10 @@
 
     @media (max-width: 600px) {
 
+        .container {
+            width: 94%;
+        }
+
         .comment-form {
             flex-direction: column;
         }
@@ -294,9 +294,18 @@
     }
 
 </style>
+```
+
+</head>
+
+<body>
 
 <header>
-    <h1>تواصلنا</h1>
+
+```
+<h1>تواصلنا</h1>
+```
+
 </header>
 
 <div class="container">
@@ -322,6 +331,7 @@
 
 
 <div id="userArea">
+
 
     <div class="welcome-box">
 
@@ -364,12 +374,14 @@
 
     </div>
 
+
 </div>
 
 
 <h2 class="posts-title">
     آخر المنشورات 📰
 </h2>
+
 
 <div id="posts">
 
@@ -383,89 +395,159 @@
 </div>
 
 <footer>
-    © 2026 تواصلنا - جميع الحقوق محفوظة
+
+```
+© 2026 تواصلنا - جميع الحقوق محفوظة
+```
+
 </footer>
 
 <script type="module">
 
-    import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    import {
-        getAuth,
-        onAuthStateChanged,
-        signOut
+import { initializeApp }
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+
+    getAuth,
+    onAuthStateChanged,
+    signOut
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+
+    getFirestore,
+    collection,
+    addDoc,
+    query,
+    orderBy,
+    onSnapshot,
+    serverTimestamp,
+    doc,
+    setDoc,
+    deleteDoc,
+    getDoc,
+    increment
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEeIJc0",
+
+    authDomain: "tawasuulna.firebaseapp.com",
+
+    projectId: "tawasuulna",
+
+    storageBucket: "tawasuulna.firebasestorage.app",
+
+    messagingSenderId: "310730975553",
+
+    appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+
+    measurementId: "G-6V0X5QY0DF"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+const guestArea =
+    document.getElementById("guestArea");
+
+const userArea =
+    document.getElementById("userArea");
+
+const userName =
+    document.getElementById("userName");
+
+const userEmail =
+    document.getElementById("userEmail");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+const postInput =
+    document.getElementById("postInput");
+
+const publishBtn =
+    document.getElementById("publishBtn");
+
+const postMessage =
+    document.getElementById("postMessage");
+
+const posts =
+    document.getElementById("posts");
+
+
+let currentUser = null;
+
+
+/*
+    مراقبة حالة تسجيل الدخول
+*/
+
+onAuthStateChanged(auth, (user) => {
+
+    currentUser = user;
+
+
+    if (user) {
+
+        guestArea.style.display = "none";
+
+        userArea.style.display = "block";
+
+
+        userName.textContent =
+            user.displayName ||
+            user.email.split("@")[0];
+
+
+        userEmail.textContent =
+            user.email;
+
+    } else {
+
+        guestArea.style.display = "block";
+
+        userArea.style.display = "none";
+
     }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    import {
-        getFirestore,
-        collection,
-        addDoc,
-        query,
-        orderBy,
-        onSnapshot,
-        serverTimestamp,
-        doc,
-        setDoc,
-        deleteDoc,
-        getDoc,
-        increment
-    }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEeIJc0",
-        authDomain: "tawasuulna.firebaseapp.com",
-        projectId: "tawasuulna",
-        storageBucket: "tawasuulna.firebasestorage.app",
-        messagingSenderId: "310730975553",
-        appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
-        measurementId: "G-6V0X5QY0DF"
-    };
+    loadPosts();
+
+});
 
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+/*
+    تسجيل الخروج
+*/
 
-
-    const guestArea = document.getElementById("guestArea");
-    const userArea = document.getElementById("userArea");
-    const userName = document.getElementById("userName");
-    const userEmail = document.getElementById("userEmail");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const postInput = document.getElementById("postInput");
-    const publishBtn = document.getElementById("publishBtn");
-    const postMessage = document.getElementById("postMessage");
-    const posts = document.getElementById("posts");
-
-
-    onAuthStateChanged(auth, (user) => {
-
-        if (user) {
-
-            guestArea.style.display = "none";
-            userArea.style.display = "block";
-
-            userName.textContent =
-                user.displayName ||
-                user.email.split("@")[0];
-
-            userEmail.textContent = user.email;
-
-        } else {
-
-            guestArea.style.display = "block";
-            userArea.style.display = "none";
-
-        }
-
-    });
-
-
-    logoutBtn.addEventListener("click", async () => {
+logoutBtn.addEventListener(
+    "click",
+    async () => {
 
         try {
 
@@ -476,92 +558,154 @@
         } catch (error) {
 
             console.error(error);
+
             alert("حدث خطأ أثناء تسجيل الخروج");
 
         }
 
-    });
+    }
+);
 
 
-    publishBtn.addEventListener("click", async () => {
+/*
+    نشر منشور
+*/
 
-        const user = auth.currentUser;
-        const content = postInput.value.trim();
+publishBtn.addEventListener(
+    "click",
+    async () => {
+
+        const user =
+            auth.currentUser;
+
+
+        const content =
+            postInput.value.trim();
+
 
         if (!user) {
+
             alert("يجب تسجيل الدخول أولًا.");
+
             return;
+
         }
+
 
         if (!content) {
 
             postMessage.style.color = "red";
-            postMessage.textContent = "اكتب منشورك أولًا.";
+
+            postMessage.textContent =
+                "اكتب منشورك أولًا.";
 
             return;
+
         }
+
 
         try {
 
             publishBtn.disabled = true;
-            publishBtn.textContent = "جارٍ النشر...";
+
+            publishBtn.textContent =
+                "جارٍ النشر...";
+
 
             const name =
                 user.displayName ||
                 user.email.split("@")[0];
 
+
             await addDoc(
                 collection(db, "posts"),
                 {
+
                     content: content,
+
                     userId: user.uid,
+
                     userName: name,
+
                     userEmail: user.email,
+
                     likesCount: 0,
+
                     createdAt: serverTimestamp()
+
                 }
             );
 
+
             postInput.value = "";
 
-            postMessage.style.color = "green";
-            postMessage.textContent = "تم نشر المنشور بنجاح 🎉";
+
+            postMessage.style.color =
+                "green";
+
+
+            postMessage.textContent =
+                "تم نشر المنشور بنجاح 🎉";
+
 
             setTimeout(() => {
+
                 postMessage.textContent = "";
+
             }, 2500);
+
 
         } catch (error) {
 
             console.error(error);
 
-            postMessage.style.color = "red";
+
+            postMessage.style.color =
+                "red";
+
+
             postMessage.textContent =
                 "حدث خطأ أثناء نشر المنشور.";
 
         } finally {
 
             publishBtn.disabled = false;
-            publishBtn.textContent = "نشر المنشور";
+
+            publishBtn.textContent =
+                "نشر المنشور";
 
         }
 
-    });
+    }
+);
 
 
-    async function toggleLike(postId, likeButton) {
+/*
+    الإعجاب
+*/
 
-        const user = auth.currentUser;
+async function toggleLike(
+    postId,
+    likeButton
+) {
 
-        if (!user) {
+    const user =
+        auth.currentUser;
 
-            alert("يجب تسجيل الدخول للإعجاب بالمنشور.");
 
-            return;
+    if (!user) {
 
-        }
+        alert(
+            "يجب تسجيل الدخول للإعجاب بالمنشور."
+        );
 
-        const likeRef = doc(
+        return;
+
+    }
+
+
+    const likeRef =
+        doc(
             db,
             "posts",
             postId,
@@ -569,211 +713,310 @@
             user.uid
         );
 
-        const postRef = doc(
+
+    const postRef =
+        doc(
             db,
             "posts",
             postId
         );
 
-        try {
 
-            likeButton.disabled = true;
+    try {
 
-            const likeDoc =
-                await getDoc(likeRef);
-
-            if (likeDoc.exists()) {
-
-                await deleteDoc(likeRef);
-
-                await setDoc(
-                    postRef,
-                    {
-                        likesCount: increment(-1)
-                    },
-                    {
-                        merge: true
-                    }
-                );
-
-            } else {
-
-                await setDoc(
-                    likeRef,
-                    {
-                        userId: user.uid,
-                        createdAt: serverTimestamp()
-                    }
-                );
-
-                await setDoc(
-                    postRef,
-                    {
-                        likesCount: increment(1)
-                    },
-                    {
-                        merge: true
-                    }
-                );
-
-            }
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert("حدث خطأ أثناء الإعجاب.");
-
-        } finally {
-
-            likeButton.disabled = false;
-
-        }
-
-    }
+        likeButton.disabled = true;
 
 
-    async function addComment(postId, input, button, commentsContainer) {
+        const likeDoc =
+            await getDoc(likeRef);
 
-        const user = auth.currentUser;
 
-        if (!user) {
+        if (likeDoc.exists()) {
 
-            alert("يجب تسجيل الدخول لكتابة تعليق.");
+            await deleteDoc(likeRef);
 
-            return;
 
-        }
-
-        const content = input.value.trim();
-
-        if (!content) {
-
-            alert("اكتب التعليق أولًا.");
-
-            return;
-
-        }
-
-        try {
-
-            button.disabled = true;
-            button.textContent = "جارٍ النشر...";
-
-            const name =
-                user.displayName ||
-                user.email.split("@")[0];
-
-            await addDoc(
-                collection(
-                    db,
-                    "posts",
-                    postId,
-                    "comments"
-                ),
+            await setDoc(
+                postRef,
                 {
-                    content: content,
-                    userId: user.uid,
-                    userName: name,
-                    userEmail: user.email,
-                    createdAt: serverTimestamp()
+
+                    likesCount:
+                        increment(-1)
+
+                },
+                {
+
+                    merge: true
+
                 }
             );
 
-            input.value = "";
 
-        } catch (error) {
+        } else {
 
-            console.error(error);
+            await setDoc(
+                likeRef,
+                {
 
-            alert("حدث خطأ أثناء نشر التعليق.");
+                    userId: user.uid,
 
-        } finally {
+                    createdAt:
+                        serverTimestamp()
 
-            button.disabled = false;
-            button.textContent = "نشر";
+                }
+            );
+
+
+            await setDoc(
+                postRef,
+                {
+
+                    likesCount:
+                        increment(1)
+
+                },
+                {
+
+                    merge: true
+
+                }
+            );
 
         }
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "حدث خطأ أثناء الإعجاب."
+        );
+
+
+    } finally {
+
+        likeButton.disabled = false;
+
+    }
+
+}
+
+
+/*
+    إضافة تعليق
+*/
+
+async function addComment(
+    postId,
+    input,
+    button,
+    message
+) {
+
+    const user =
+        auth.currentUser;
+
+
+    if (!user) {
+
+        window.location.href =
+            "login.html";
+
+        return;
 
     }
 
 
-    function loadComments(postId, commentsContainer) {
+    const content =
+        input.value.trim();
 
-        const commentsQuery = query(
+
+    if (!content) {
+
+        message.style.color = "red";
+
+        message.textContent =
+            "اكتب تعليقك أولًا.";
+
+        return;
+
+    }
+
+
+    try {
+
+        button.disabled = true;
+
+        button.textContent =
+            "جارٍ النشر...";
+
+
+        const name =
+            user.displayName ||
+            user.email.split("@")[0];
+
+
+        await addDoc(
             collection(
                 db,
                 "posts",
                 postId,
                 "comments"
             ),
-            orderBy("createdAt", "asc")
+            {
+
+                content: content,
+
+                userId: user.uid,
+
+                userName: name,
+
+                userEmail: user.email,
+
+                createdAt:
+                    serverTimestamp()
+
+            }
         );
 
 
-        onSnapshot(
-            commentsQuery,
-
-            (snapshot) => {
-
-                commentsContainer.innerHTML = "";
-
-                if (snapshot.empty) {
-
-                    const noComments =
-                        document.createElement("div");
-
-                    noComments.className =
-                        "no-comments";
-
-                    noComments.textContent =
-                        "لا توجد تعليقات حتى الآن 💬";
-
-                    commentsContainer.appendChild(
-                        noComments
-                    );
-
-                    return;
-
-                }
+        input.value = "";
 
 
-                snapshot.forEach((commentDoc) => {
+        message.style.color =
+            "green";
+
+
+        message.textContent =
+            "تم نشر التعليق ✓";
+
+
+        setTimeout(() => {
+
+            message.textContent = "";
+
+        }, 2000);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        message.style.color =
+            "red";
+
+
+        message.textContent =
+            "حدث خطأ أثناء نشر التعليق.";
+
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            "تعليق";
+
+    }
+
+}
+
+
+/*
+    تحميل التعليقات
+*/
+
+function loadComments(
+    postId,
+    commentsContainer
+) {
+
+
+    const commentsQuery =
+        query(
+            collection(
+                db,
+                "posts",
+                postId,
+                "comments"
+            ),
+            orderBy(
+                "createdAt",
+                "asc"
+            )
+        );
+
+
+    onSnapshot(
+        commentsQuery,
+        (snapshot) => {
+
+            commentsContainer.innerHTML = "";
+
+
+            if (snapshot.empty) {
+
+                commentsContainer.innerHTML =
+                    '<div class="comments-empty">لا توجد تعليقات حتى الآن.</div>';
+
+                return;
+
+            }
+
+
+            snapshot.forEach(
+                (commentDoc) => {
 
                     const data =
                         commentDoc.data();
 
 
                     const comment =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
 
                     comment.className =
                         "comment";
 
 
                     const commentUser =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
 
                     commentUser.className =
                         "comment-user";
 
+
                     commentUser.textContent =
                         "👤 " +
-                        (data.userName || "مستخدم");
+                        (
+                            data.userName ||
+                            "مستخدم"
+                        );
 
 
                     const commentContent =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
 
                     commentContent.className =
                         "comment-content";
 
+
                     commentContent.textContent =
-                        data.content || "";
+                        data.content ||
+                        "";
 
 
                     const commentDate =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
 
                     commentDate.className =
                         "comment-date";
@@ -785,12 +1028,14 @@
                             "📅 " +
                             data.createdAt
                                 .toDate()
-                                .toLocaleString("ar-EG");
+                                .toLocaleString(
+                                    "ar-EG"
+                                );
 
                     } else {
 
                         commentDate.textContent =
-                            "📅 تم التعليق الآن";
+                            "📅 تم النشر الآن";
 
                     }
 
@@ -807,32 +1052,47 @@
                         commentDate
                     );
 
+
                     commentsContainer.appendChild(
                         comment
                     );
 
-                });
+                }
+            );
 
-            },
+        },
 
-            (error) => {
+        (error) => {
 
-                console.error(error);
+            console.error(
+                "Comments Error:",
+                error
+            );
 
-                commentsContainer.innerHTML =
-                    '<div class="no-comments">تعذر تحميل التعليقات.</div>';
+            commentsContainer.innerHTML =
+                '<div class="comments-empty">تعذر تحميل التعليقات.</div>';
 
-            }
-
-        );
-
-    }
-
-
-    const postsQuery = query(
-        collection(db, "posts"),
-        orderBy("createdAt", "desc")
+        }
     );
+
+}
+
+
+/*
+    تحميل المنشورات
+*/
+
+function loadPosts() {
+
+
+    const postsQuery =
+        query(
+            collection(db, "posts"),
+            orderBy(
+                "createdAt",
+                "desc"
+            )
+        );
 
 
     onSnapshot(
@@ -841,6 +1101,7 @@
         async (snapshot) => {
 
             posts.innerHTML = "";
+
 
             if (snapshot.empty) {
 
@@ -852,54 +1113,85 @@
             }
 
 
-            const currentUser = auth.currentUser;
+            for (
+                const postDoc of snapshot.docs
+            ) {
 
 
-            for (const postDoc of snapshot.docs) {
-
-                const data = postDoc.data();
+                const data =
+                    postDoc.data();
 
 
                 const post =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
-                post.className = "post";
+                post.className =
+                    "post";
 
+
+                /*
+                    اسم صاحب المنشور
+                */
 
                 const name =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
-                name.className = "post-user";
+                name.className =
+                    "post-user";
+
 
                 name.textContent =
                     "👤 " +
-                    (data.userName || "مستخدم");
+                    (
+                        data.userName ||
+                        "مستخدم"
+                    );
 
+
+                /*
+                    محتوى المنشور
+                */
 
                 const content =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
                 content.className =
                     "post-content";
 
-                content.textContent =
-                    data.content || "";
 
+                content.textContent =
+                    data.content ||
+                    "";
+
+
+                /*
+                    تاريخ المنشور
+                */
 
                 const date =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
-                date.className = "post-date";
+                date.className =
+                    "post-date";
 
 
                 if (data.createdAt) {
 
-                    const postDate =
-                        data.createdAt.toDate();
-
                     date.textContent =
                         "📅 " +
-                        postDate.toLocaleString("ar-EG");
+                        data.createdAt
+                            .toDate()
+                            .toLocaleString(
+                                "ar-EG"
+                            );
 
                 } else {
 
@@ -909,21 +1201,34 @@
                 }
 
 
+                /*
+                    أزرار المنشور
+                */
+
                 const actions =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
                 actions.className =
                     "post-actions";
 
 
+                /*
+                    زر الإعجاب
+                */
+
                 const likeButton =
-                    document.createElement("button");
+                    document.createElement(
+                        "button"
+                    );
 
                 likeButton.className =
                     "like-btn";
 
 
-                let userLiked = false;
+                let userLiked =
+                    false;
 
 
                 if (currentUser) {
@@ -941,8 +1246,10 @@
                                 )
                             );
 
+
                         userLiked =
                             likeDoc.exists();
+
 
                     } catch (error) {
 
@@ -974,10 +1281,14 @@
 
                 likeButton.addEventListener(
                     "click",
-                    () => toggleLike(
-                        postDoc.id,
-                        likeButton
-                    )
+                    () => {
+
+                        toggleLike(
+                            postDoc.id,
+                            likeButton
+                        );
+
+                    }
                 );
 
 
@@ -986,103 +1297,171 @@
                 );
 
 
-                /* =========================
-                   قسم التعليقات
-                ========================= */
+                /*
+                    قسم التعليقات
+                */
 
                 const commentsSection =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
                 commentsSection.className =
                     "comments-section";
 
 
                 const commentsTitle =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
                 commentsTitle.className =
                     "comments-title";
+
 
                 commentsTitle.textContent =
                     "💬 التعليقات";
 
 
                 const commentsContainer =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
 
-                /* نموذج إضافة التعليق */
+                const commentForm =
+                    document.createElement(
+                        "div"
+                    );
 
-                if (currentUser) {
-
-                    const commentForm =
-                        document.createElement("div");
-
-                    commentForm.className =
-                        "comment-form";
+                commentForm.className =
+                    "comment-form";
 
 
-                    const commentInput =
-                        document.createElement("textarea");
+                const commentInput =
+                    document.createElement(
+                        "input"
+                    );
 
-                    commentInput.className =
-                        "comment-input";
+                commentInput.className =
+                    "comment-input";
 
-                    commentInput.maxLength = 300;
+                commentInput.type =
+                    "text";
+
+                commentInput.maxLength =
+                    300;
+
+                commentInput.placeholder =
+                    "اكتب تعليقك هنا...";
+
+
+                const commentButton =
+                    document.createElement(
+                        "button"
+                    );
+
+                commentButton.className =
+                    "comment-btn";
+
+                commentButton.textContent =
+                    "تعليق";
+
+
+                const commentMessage =
+                    document.createElement(
+                        "div"
+                    );
+
+                commentMessage.style.marginTop =
+                    "8px";
+
+                commentMessage.style.fontSize =
+                    "13px";
+
+
+                /*
+                    لو المستخدم غير مسجل
+                */
+
+                if (!currentUser) {
+
+                    commentInput.disabled =
+                        true;
 
                     commentInput.placeholder =
-                        "اكتب تعليقك هنا...";
+                        "سجل الدخول لكتابة تعليق";
 
-
-                    const commentButton =
-                        document.createElement("button");
-
-                    commentButton.className =
-                        "comment-btn";
 
                     commentButton.textContent =
-                        "نشر";
+                        "سجل الدخول لكتابة تعليق";
+
+
+                    commentButton.className =
+                        "comment-login-btn";
 
 
                     commentButton.addEventListener(
                         "click",
-                        () => addComment(
-                            postDoc.id,
-                            commentInput,
-                            commentButton,
-                            commentsContainer
-                        )
+                        () => {
+
+                            window.location.href =
+                                "login.html";
+
+                        }
                     );
 
-
-                    commentForm.appendChild(
-                        commentInput
-                    );
-
-                    commentForm.appendChild(
-                        commentButton
-                    );
-
-                    commentsSection.appendChild(
-                        commentForm
-                    );
 
                 } else {
 
-                    const loginComment =
-                        document.createElement("div");
 
-                    loginComment.className =
-                        "login-comment";
+                    commentButton.addEventListener(
+                        "click",
+                        () => {
 
-                    loginComment.innerHTML =
-                        '🔐 <a href="login.html">سجل الدخول</a> لكتابة تعليق.';
+                            addComment(
+                                postDoc.id,
+                                commentInput,
+                                commentButton,
+                                commentMessage
+                            );
 
-                    commentsSection.appendChild(
-                        loginComment
+                        }
+                    );
+
+
+                    commentInput.addEventListener(
+                        "keydown",
+                        (event) => {
+
+                            if (
+                                event.key === "Enter"
+                            ) {
+
+                                event.preventDefault();
+
+                                addComment(
+                                    postDoc.id,
+                                    commentInput,
+                                    commentButton,
+                                    commentMessage
+                                );
+
+                            }
+
+                        }
                     );
 
                 }
+
+
+                commentForm.appendChild(
+                    commentInput
+                );
+
+                commentForm.appendChild(
+                    commentButton
+                );
 
 
                 commentsSection.appendChild(
@@ -1093,6 +1472,18 @@
                     commentsContainer
                 );
 
+                commentsSection.appendChild(
+                    commentForm
+                );
+
+                commentsSection.appendChild(
+                    commentMessage
+                );
+
+
+                /*
+                    تحميل التعليقات
+                */
 
                 loadComments(
                     postDoc.id,
@@ -1100,11 +1491,22 @@
                 );
 
 
+                /*
+                    تركيب المنشور
+                */
+
                 post.appendChild(name);
+
                 post.appendChild(content);
+
                 post.appendChild(date);
+
                 post.appendChild(actions);
-                post.appendChild(commentsSection);
+
+                post.appendChild(
+                    commentsSection
+                );
+
 
                 posts.appendChild(post);
 
@@ -1114,7 +1516,11 @@
 
         (error) => {
 
-            console.error(error);
+            console.error(
+                "Posts Error:",
+                error
+            );
+
 
             posts.innerHTML =
                 '<div class="empty-posts">حدث خطأ أثناء تحميل المنشورات.</div>';
@@ -1123,4 +1529,11 @@
 
     );
 
+}
+
+
 </script>
+
+</body>
+
+</html>
