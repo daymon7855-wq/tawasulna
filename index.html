@@ -53,13 +53,19 @@
             display: none;
         }
 
-        .welcome-box {
+        .welcome-box,
+        .post-box,
+        .post,
+        .empty-posts {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
-            text-align: center;
             margin-bottom: 20px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .welcome-box {
+            text-align: center;
         }
 
         #userName {
@@ -96,14 +102,6 @@
             background: #b91c1c;
         }
 
-        .post-box {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        }
-
         textarea {
             width: 100%;
             box-sizing: border-box;
@@ -118,7 +116,7 @@
 
         #publishBtn {
             width: 100%;
-            margin: 12px 0 0 0;
+            margin: 12px 0 0;
         }
 
         #publishBtn:disabled {
@@ -137,24 +135,11 @@
             margin-bottom: 15px;
         }
 
-        #posts {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .post {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        }
-
         .post-user {
             font-size: 18px;
             font-weight: bold;
             color: #2563eb;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .post-content {
@@ -170,10 +155,32 @@
             font-size: 13px;
         }
 
+        .post-actions {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+
+        .like-btn {
+            background: #f2f4f8;
+            color: #333;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .like-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .like-btn.liked {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
         .empty-posts {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
             text-align: center;
             color: #777;
         }
@@ -195,11 +202,7 @@
         <h1>تواصلنا</h1>
     </header>
 
-
     <div class="container">
-
-
-        <!-- المستخدم غير مسجل الدخول -->
 
         <div id="guestArea">
 
@@ -219,8 +222,6 @@
 
         </div>
 
-
-        <!-- المستخدم مسجل الدخول -->
 
         <div id="userArea">
 
@@ -247,8 +248,6 @@
             </div>
 
 
-            <!-- كتابة منشور -->
-
             <div class="post-box">
 
                 <h2>ماذا تفكر؟ 📝</h2>
@@ -270,8 +269,6 @@
         </div>
 
 
-        <!-- المنشورات -->
-
         <h2 class="posts-title">
             آخر المنشورات 📰
         </h2>
@@ -283,7 +280,6 @@
             </div>
 
         </div>
-
 
     </div>
 
@@ -312,7 +308,12 @@
             query,
             orderBy,
             onSnapshot,
-            serverTimestamp
+            serverTimestamp,
+            doc,
+            setDoc,
+            deleteDoc,
+            getDoc,
+            increment
         }
         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -329,81 +330,43 @@
 
 
         const app = initializeApp(firebaseConfig);
-
         const auth = getAuth(app);
-
         const db = getFirestore(app);
 
 
-        const guestArea =
-            document.getElementById("guestArea");
+        const guestArea = document.getElementById("guestArea");
+        const userArea = document.getElementById("userArea");
+        const userName = document.getElementById("userName");
+        const userEmail = document.getElementById("userEmail");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const postInput = document.getElementById("postInput");
+        const publishBtn = document.getElementById("publishBtn");
+        const postMessage = document.getElementById("postMessage");
+        const posts = document.getElementById("posts");
 
-        const userArea =
-            document.getElementById("userArea");
-
-        const userName =
-            document.getElementById("userName");
-
-        const userEmail =
-            document.getElementById("userEmail");
-
-        const logoutBtn =
-            document.getElementById("logoutBtn");
-
-        const postInput =
-            document.getElementById("postInput");
-
-        const publishBtn =
-            document.getElementById("publishBtn");
-
-        const postMessage =
-            document.getElementById("postMessage");
-
-        const posts =
-            document.getElementById("posts");
-
-
-        /* حالة تسجيل الدخول */
 
         onAuthStateChanged(auth, (user) => {
 
             if (user) {
 
                 guestArea.style.display = "none";
-
                 userArea.style.display = "block";
 
+                userName.textContent =
+                    user.displayName ||
+                    user.email.split("@")[0];
 
-                if (user.displayName) {
+                userEmail.textContent = user.email;
 
-                    userName.textContent =
-                        user.displayName;
-
-                } else {
-
-                    userName.textContent =
-                        user.email.split("@")[0];
-
-                }
-
-
-                userEmail.textContent =
-                    user.email;
-
-            }
-
-            else {
+            } else {
 
                 guestArea.style.display = "block";
-
                 userArea.style.display = "none";
 
             }
 
         });
 
-
-        /* تسجيل الخروج */
 
         logoutBtn.addEventListener("click", async () => {
 
@@ -413,12 +376,9 @@
 
                 alert("تم تسجيل الخروج بنجاح");
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.error(error);
-
                 alert("حدث خطأ أثناء تسجيل الخروج");
 
             }
@@ -426,162 +386,197 @@
         });
 
 
-        /* نشر منشور */
-
         publishBtn.addEventListener("click", async () => {
 
-            const user =
-                auth.currentUser;
-
-            const content =
-                postInput.value.trim();
-
+            const user = auth.currentUser;
+            const content = postInput.value.trim();
 
             if (!user) {
-
                 alert("يجب تسجيل الدخول أولًا.");
-
                 return;
-
             }
-
 
             if (!content) {
 
                 postMessage.style.color = "red";
-
-                postMessage.textContent =
-                    "اكتب منشورك أولًا.";
+                postMessage.textContent = "اكتب منشورك أولًا.";
 
                 return;
-
             }
-
 
             try {
 
                 publishBtn.disabled = true;
-
-                publishBtn.textContent =
-                    "جارٍ النشر...";
-
+                publishBtn.textContent = "جارٍ النشر...";
 
                 const name =
                     user.displayName ||
                     user.email.split("@")[0];
 
-
                 await addDoc(
                     collection(db, "posts"),
-
                     {
                         content: content,
                         userId: user.uid,
                         userName: name,
                         userEmail: user.email,
+                        likesCount: 0,
                         createdAt: serverTimestamp()
                     }
-
                 );
-
 
                 postInput.value = "";
 
-
                 postMessage.style.color = "green";
-
-                postMessage.textContent =
-                    "تم نشر المنشور بنجاح 🎉";
-
+                postMessage.textContent = "تم نشر المنشور بنجاح 🎉";
 
                 setTimeout(() => {
-
                     postMessage.textContent = "";
-
                 }, 2500);
 
-
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.error(error);
 
                 postMessage.style.color = "red";
-
                 postMessage.textContent =
                     "حدث خطأ أثناء نشر المنشور.";
 
-            }
-
-            finally {
+            } finally {
 
                 publishBtn.disabled = false;
-
-                publishBtn.textContent =
-                    "نشر المنشور";
+                publishBtn.textContent = "نشر المنشور";
 
             }
 
         });
 
 
-        /* عرض المنشورات */
+        async function toggleLike(postId, likeButton) {
+
+            const user = auth.currentUser;
+
+            if (!user) {
+
+                alert("يجب تسجيل الدخول للإعجاب بالمنشور.");
+
+                return;
+
+            }
+
+            const likeRef = doc(
+                db,
+                "posts",
+                postId,
+                "likes",
+                user.uid
+            );
+
+            const postRef = doc(
+                db,
+                "posts",
+                postId
+            );
+
+            try {
+
+                likeButton.disabled = true;
+
+                const likeDoc =
+                    await getDoc(likeRef);
+
+                if (likeDoc.exists()) {
+
+                    await deleteDoc(likeRef);
+
+                    await setDoc(
+                        postRef,
+                        {
+                            likesCount: increment(-1)
+                        },
+                        {
+                            merge: true
+                        }
+                    );
+
+                } else {
+
+                    await setDoc(
+                        likeRef,
+                        {
+                            userId: user.uid,
+                            createdAt: serverTimestamp()
+                        }
+                    );
+
+                    await setDoc(
+                        postRef,
+                        {
+                            likesCount: increment(1)
+                        },
+                        {
+                            merge: true
+                        }
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert("حدث خطأ أثناء الإعجاب.");
+
+            } finally {
+
+                likeButton.disabled = false;
+
+            }
+
+        }
+
 
         const postsQuery = query(
-
             collection(db, "posts"),
-
             orderBy("createdAt", "desc")
-
         );
 
 
         onSnapshot(
-
             postsQuery,
 
-            (snapshot) => {
+            async (snapshot) => {
 
                 posts.innerHTML = "";
 
-
                 if (snapshot.empty) {
 
-                    const emptyBox =
-                        document.createElement("div");
-
-                    emptyBox.className =
-                        "empty-posts";
-
-                    emptyBox.textContent =
-                        "لا توجد منشورات حتى الآن. كن أول من ينشر 🎉";
-
-                    posts.appendChild(emptyBox);
+                    posts.innerHTML =
+                        '<div class="empty-posts">لا توجد منشورات حتى الآن. كن أول من ينشر 🎉</div>';
 
                     return;
 
                 }
 
 
-                snapshot.forEach((postDoc) => {
+                const currentUser = auth.currentUser;
 
-                    const data =
-                        postDoc.data();
+
+                for (const postDoc of snapshot.docs) {
+
+                    const data = postDoc.data();
 
 
                     const post =
                         document.createElement("div");
 
-                    post.className =
-                        "post";
+                    post.className = "post";
 
 
                     const name =
                         document.createElement("div");
 
-                    name.className =
-                        "post-user";
+                    name.className = "post-user";
 
                     name.textContent =
                         "👤 " +
@@ -601,8 +596,7 @@
                     const date =
                         document.createElement("div");
 
-                    date.className =
-                        "post-date";
+                    date.className = "post-date";
 
 
                     if (data.createdAt) {
@@ -614,9 +608,7 @@
                             "📅 " +
                             postDate.toLocaleString("ar-EG");
 
-                    }
-
-                    else {
+                    } else {
 
                         date.textContent =
                             "📅 تم النشر الآن";
@@ -624,15 +616,90 @@
                     }
 
 
+                    const actions =
+                        document.createElement("div");
+
+                    actions.className =
+                        "post-actions";
+
+
+                    const likeButton =
+                        document.createElement("button");
+
+                    likeButton.className =
+                        "like-btn";
+
+
+                    let userLiked = false;
+
+
+                    if (currentUser) {
+
+                        try {
+
+                            const likeDoc =
+                                await getDoc(
+                                    doc(
+                                        db,
+                                        "posts",
+                                        postDoc.id,
+                                        "likes",
+                                        currentUser.uid
+                                    )
+                                );
+
+                            userLiked =
+                                likeDoc.exists();
+
+                        } catch (error) {
+
+                            console.error(error);
+
+                        }
+
+                    }
+
+
+                    const likesCount =
+                        data.likesCount || 0;
+
+
+                    likeButton.textContent =
+                        userLiked
+                            ? `❤️ أعجبك هذا (${likesCount})`
+                            : `🤍 إعجاب (${likesCount})`;
+
+
+                    if (userLiked) {
+
+                        likeButton.classList.add(
+                            "liked"
+                        );
+
+                    }
+
+
+                    likeButton.addEventListener(
+                        "click",
+                        () => toggleLike(
+                            postDoc.id,
+                            likeButton
+                        )
+                    );
+
+
+                    actions.appendChild(
+                        likeButton
+                    );
+
                     post.appendChild(name);
-
                     post.appendChild(content);
-
                     post.appendChild(date);
+                    post.appendChild(actions);
 
                     posts.appendChild(post);
 
-                });
+                }
 
             },
 
