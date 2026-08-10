@@ -23,6 +23,7 @@
             border-radius: 12px;
             width: 350px;
             text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
         h1 {
@@ -50,6 +51,16 @@
             cursor: pointer;
         }
 
+        button:disabled {
+            background: #93b4f5;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
         a {
             display: block;
             margin-top: 15px;
@@ -64,16 +75,125 @@
     <div class="box">
         <h1>إنشاء حساب</h1>
 
-        <input type="text" placeholder="اسم المستخدم">
+        <input id="username" type="text" placeholder="اسم المستخدم">
 
-        <input type="email" placeholder="البريد الإلكتروني">
+        <input id="email" type="email" placeholder="البريد الإلكتروني">
 
-        <input type="password" placeholder="كلمة المرور">
+        <input id="password" type="password" placeholder="كلمة المرور">
 
-        <button>إنشاء الحساب</button>
+        <button id="signupBtn">إنشاء الحساب</button>
+
+        <div id="message"></div>
 
         <a href="index.html">العودة إلى الصفحة الرئيسية</a>
     </div>
+
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+        import {
+            getAuth,
+            createUserWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+            authDomain: "tawasuulna.firebaseapp.com",
+            projectId: "tawasuulna",
+            storageBucket: "tawasuulna.firebasestorage.app",
+            messagingSenderId: "310730975553",
+            appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+            measurementId: "G-6V0X5QY0DF"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+
+        const usernameInput = document.getElementById("username");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const signupBtn = document.getElementById("signupBtn");
+        const message = document.getElementById("message");
+
+
+        signupBtn.addEventListener("click", async () => {
+
+            const username = usernameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+
+            if (!username || !email || !password) {
+                message.style.color = "red";
+                message.textContent = "من فضلك املأ جميع البيانات.";
+                return;
+            }
+
+
+            if (password.length < 6) {
+                message.style.color = "red";
+                message.textContent = "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
+                return;
+            }
+
+
+            signupBtn.disabled = true;
+            signupBtn.textContent = "جارٍ إنشاء الحساب...";
+
+
+            try {
+
+                await createUserWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+                message.style.color = "green";
+                message.textContent = "تم إنشاء الحساب بنجاح 🎉";
+
+
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
+
+
+            } catch (error) {
+
+                signupBtn.disabled = false;
+                signupBtn.textContent = "إنشاء الحساب";
+
+
+                message.style.color = "red";
+
+
+                if (error.code === "auth/email-already-in-use") {
+                    message.textContent = "هذا البريد الإلكتروني مستخدم بالفعل.";
+                }
+
+                else if (error.code === "auth/invalid-email") {
+                    message.textContent = "البريد الإلكتروني غير صحيح.";
+                }
+
+                else if (error.code === "auth/weak-password") {
+                    message.textContent = "كلمة المرور ضعيفة.";
+                }
+
+                else {
+                    message.textContent = "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى.";
+                    console.error(error);
+                }
+            }
+
+        });
+
+    </script>
 
 </body>
 </html>
