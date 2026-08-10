@@ -1,4 +1,3 @@
-window.location.href = "index.html";```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -9,7 +8,6 @@ window.location.href = "index.html";```html
     <title>تواصلنا</title>
 
     <style>
-
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -88,9 +86,7 @@ window.location.href = "index.html";```html
             color: #333;
             font-size: 16px;
         }
-
     </style>
-
 </head>
 
 <body>
@@ -99,11 +95,9 @@ window.location.href = "index.html";```html
         <h1>تواصلنا</h1>
     </header>
 
-
     <div class="container">
 
         <!-- المستخدم غير مسجل الدخول -->
-
         <div id="guestArea">
 
             <h2>مرحبًا بك في تواصلنا 👋</h2>
@@ -124,7 +118,6 @@ window.location.href = "index.html";```html
 
 
         <!-- المستخدم مسجل الدخول -->
-
         <div id="userArea">
 
             <h2>أهلًا بك في تواصلنا 👋</h2>
@@ -137,6 +130,10 @@ window.location.href = "index.html";```html
                 البريد الإلكتروني:
                 <span id="userEmail"></span>
             </p>
+
+            <a class="button" href="profile.html">
+                👤 الملف الشخصي
+            </a>
 
             <button id="logoutBtn" class="button">
                 تسجيل الخروج
@@ -166,35 +163,23 @@ window.location.href = "index.html";```html
 
 
         const firebaseConfig = {
-
             apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
-
             authDomain: "tawasuulna.firebaseapp.com",
-
             projectId: "tawasuulna",
-
             storageBucket: "tawasuulna.firebasestorage.app",
-
             messagingSenderId: "310730975553",
-
             appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
-
             measurementId: "G-6V0X5QY0DF"
-
         };
 
 
         const app = initializeApp(firebaseConfig);
-
         const auth = getAuth(app);
 
 
         const guestArea = document.getElementById("guestArea");
-
         const userArea = document.getElementById("userArea");
-
         const userEmail = document.getElementById("userEmail");
-
         const logoutBtn = document.getElementById("logoutBtn");
 
 
@@ -202,22 +187,14 @@ window.location.href = "index.html";```html
 
             if (user) {
 
-                // المستخدم مسجل الدخول
-
                 guestArea.style.display = "none";
-
                 userArea.style.display = "block";
 
                 userEmail.textContent = user.email;
 
-            }
-
-            else {
-
-                // المستخدم غير مسجل الدخول
+            } else {
 
                 guestArea.style.display = "block";
-
                 userArea.style.display = "none";
 
             }
@@ -233,9 +210,7 @@ window.location.href = "index.html";```html
 
                 alert("تم تسجيل الخروج بنجاح");
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.error(error);
 
@@ -248,7 +223,4 @@ window.location.href = "index.html";```html
     </script>
 
 </body>
-
 </html>
-```
-
