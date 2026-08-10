@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -24,6 +25,7 @@
             border-radius: 12px;
             width: 350px;
             text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
         h1 {
@@ -51,6 +53,12 @@
             cursor: pointer;
         }
 
+        #message {
+            margin-top: 15px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
         a {
             display: block;
             margin-top: 15px;
@@ -62,22 +70,117 @@
 
 <body>
 
-    <div class="box">
+<div class="box">
 
-        <h1>تسجيل الدخول</h1>
+    <h1>تسجيل الدخول</h1>
 
-        <input type="email" placeholder="البريد الإلكتروني">
+    <input id="email" type="email" placeholder="البريد الإلكتروني">
 
-        <input type="password" placeholder="كلمة المرور">
+    <input id="password" type="password" placeholder="كلمة المرور">
 
-        <button>تسجيل الدخول</button>
+    <button id="loginBtn">تسجيل الدخول</button>
 
-        <a href="index.html">
-            العودة إلى الصفحة الرئيسية
-        </a>
+    <div id="message"></div>
 
-    </div>
+    <a href="signup.html">إنشاء حساب جديد</a>
+
+    <a href="index.html">العودة إلى الصفحة الرئيسية</a>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth,
+    signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+    authDomain: "tawasuulna.firebaseapp.com",
+    projectId: "tawasuulna",
+    storageBucket: "tawasuulna.firebasestorage.app",
+    messagingSenderId: "310730975553",
+    appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+    measurementId: "G-6V0X5QY0DF"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+const email = document.getElementById("email");
+
+const password = document.getElementById("password");
+
+const button = document.getElementById("loginBtn");
+
+const message = document.getElementById("message");
+
+
+button.onclick = async function () {
+
+    message.style.color = "blue";
+
+    message.textContent = "جاري تسجيل الدخول...";
+
+
+    if (email.value.trim() === "" || password.value === "") {
+
+        message.style.color = "red";
+
+        message.textContent =
+            "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
+
+        return;
+    }
+
+
+    try {
+
+        await signInWithEmailAndPassword(
+            auth,
+            email.value.trim(),
+            password.value
+        );
+
+
+        message.style.color = "green";
+
+        message.textContent =
+            "تم تسجيل الدخول بنجاح 🎉";
+
+
+        setTimeout(function () {
+
+            window.location.href = "index.html";
+
+        }, 1500);
+
+
+    } catch (error) {
+
+        console.log(error);
+
+        message.style.color = "red";
+
+        message.textContent =
+            "فشل تسجيل الدخول: " + error.code;
+
+    }
+
+};
+
+</script>
 
 </body>
-
 </html>
+```
