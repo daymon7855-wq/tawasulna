@@ -3,10 +3,13 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 ```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
 <title>تسجيل الدخول - تواصلنا</title>
 
 <style>
@@ -64,6 +67,7 @@
         margin-top: 15px;
         font-size: 15px;
         font-weight: bold;
+        line-height: 1.6;
     }
 
     a {
@@ -151,73 +155,45 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 
-const email =
+const emailInput =
     document.getElementById("email");
 
-const password =
+const passwordInput =
     document.getElementById("password");
 
-const button =
+const loginBtn =
     document.getElementById("loginBtn");
 
 const message =
     document.getElementById("message");
 
 
-let loginStarted = false;
+loginBtn.addEventListener(
+    "click",
+    async function () {
+
+        const email =
+            emailInput.value.trim();
+
+        const password =
+            passwordInput.value;
 
 
-/*
-   Firebase يتأكد من حالة تسجيل الدخول.
-   لو المستخدم سجل الدخول بالفعل،
-   نرجعه للصفحة الرئيسية.
-*/
+        if (!email || !password) {
 
-onAuthStateChanged(auth, (user) => {
+            message.style.color = "red";
 
-    if (user && loginStarted) {
+            message.textContent =
+                "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
 
-        message.style.color = "green";
+            return;
 
-        message.textContent =
-            "تم تسجيل الدخول بنجاح 🎉";
-
-        window.location.replace("index.html");
-
-    }
-
-});
+        }
 
 
-button.onclick = async function () {
+        loginBtn.disabled = true;
 
-    const userEmail =
-        email.value.trim();
-
-    const userPassword =
-        password.value;
-
-
-    if (
-        userEmail === "" ||
-        userPassword === ""
-    ) {
-
-        message.style.color = "red";
-
-        message.textContent =
-            "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
-
-        return;
-
-    }
-
-
-    try {
-
-        button.disabled = true;
-
-        button.textContent =
+        loginBtn.textContent =
             "جارٍ تسجيل الدخول...";
 
         message.style.color = "blue";
@@ -226,71 +202,67 @@ button.onclick = async function () {
             "جاري تسجيل الدخول...";
 
 
-        loginStarted = true;
+        try {
+
+            await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
 
 
-        await signInWithEmailAndPassword(
-            auth,
-            userEmail,
-            userPassword
-        );
-
-
-        /*
-           onAuthStateChanged هي التي
-           ستنقلنا إلى index.html
-        */
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        loginStarted = false;
-
-        button.disabled = false;
-
-        button.textContent =
-            "تسجيل الدخول";
-
-
-        if (
-            error.code ===
-            "auth/invalid-credential"
-        ) {
+            message.style.color = "green";
 
             message.textContent =
-                "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+                "تم تسجيل الدخول بنجاح 🎉";
 
-        } else if (
-            error.code ===
-            "auth/user-not-found"
-        ) {
 
-            message.textContent =
-                "هذا الحساب غير موجود.";
+            /*
+                بعد نجاح Firebase
+                ننتظر لحظة بسيطة ثم
+                نرجع للصفحة الرئيسية.
+            */
 
-        } else if (
-            error.code ===
-            "auth/wrong-password"
-        ) {
+            setTimeout(() => {
 
-            message.textContent =
-                "كلمة المرور غير صحيحة.";
+                window.location.href =
+                    "index.html";
 
-        } else {
+            }, 500);
 
-            message.textContent =
-                "حدث خطأ أثناء تسجيل الدخول: " +
-                error.code;
+
+        } catch (error) {
+
+            console.error(
+                "Firebase Login Error:",
+                error
+            );
+
+
+            loginBtn.disabled = false;
+
+            loginBtn.textContent =
+                "تسجيل الدخول";
+
+
+            message.style.color = "red";
+
+
+            /*
+                هنا سنعرض كود الخطأ
+                الحقيقي من Firebase.
+            */
+
+            message.innerHTML =
+                "❌ فشل تسجيل الدخول<br>" +
+                "<small>كود الخطأ: " +
+                error.code +
+                "</small>";
 
         }
 
-        message.style.color = "red";
-
     }
-
-};
+);
 
 </script>
 
