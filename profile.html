@@ -1,346 +1,599 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>الملف الشخصي - تواصلنا</title>
+<meta charset="UTF-8">
 
-    <style>
+<meta name="viewport"
+   content="width=device-width, initial-scale=1.0">
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f2f4f8;
-        }
+<title>الملف الشخصي - تواصلنا</title>
 
-        header {
-            background: #2563eb;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+<style>
 
-        header h1 {
-            margin: 0;
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+    color: #111;
+}
 
-        .profile-box {
-            width: 90%;
-            max-width: 400px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        }
+header {
+    background: #2563eb;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
 
-        .avatar {
-            width: 100px;
-            height: 100px;
-            margin: auto;
-            border-radius: 50%;
-            background: #2563eb;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 42px;
-            font-weight: bold;
-        }
+header h1 {
+    margin: 0;
+}
 
-        input {
-            width: 90%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            text-align: center;
-        }
+.profile-box {
+    width: 90%;
+    max-width: 420px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
 
-        .email {
-            color: #666;
-            margin: 15px 0;
-        }
+.avatar {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 46px;
+    font-weight: bold;
+}
 
-        button {
-            width: 95%;
-            padding: 12px;
-            margin-top: 10px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+h2 {
+    margin-bottom: 20px;
+}
 
-        button:disabled {
-            background: #93b4f5;
-            cursor: not-allowed;
-        }
+input {
+    width: 90%;
+    padding: 13px;
+    margin: 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+    box-sizing: border-box;
+}
 
-        .home-btn {
-            display: block;
-            margin-top: 20px;
-            color: #2563eb;
-            text-decoration: none;
-        }
+.email {
+    color: #666;
+    margin: 15px 0;
+    line-height: 1.7;
+}
 
-        #message {
-            margin-top: 15px;
-            font-weight: bold;
-        }
+button {
+    width: 95%;
+    padding: 13px;
+    margin-top: 10px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-    </style>
+button:hover {
+    background: #1d4ed8;
+}
+
+button:disabled {
+    background: #93b4f5;
+    cursor: not-allowed;
+}
+
+.home-btn {
+    display: block;
+    margin-top: 20px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.home-btn:hover {
+    text-decoration: underline;
+}
+
+#message {
+    margin-top: 15px;
+    font-weight: bold;
+    line-height: 1.6;
+}
+
+</style>
+
 </head>
 
 <body>
 
-    <header>
-        <h1>تواصلنا</h1>
-    </header>
+<header>
+
+```
+<h1>تواصلنا</h1>
+```
+
+</header>
+
+<div class="profile-box">
+
+```
+<div class="avatar" id="avatar">
+    ؟
+</div>
 
 
-    <div class="profile-box">
-
-        <div class="avatar" id="avatar">؟</div>
-
-        <h2>الملف الشخصي</h2>
-
-        <input
-            id="username"
-            type="text"
-            placeholder="اكتب اسمك"
-        >
-
-        <p class="email">
-            البريد الإلكتروني:
-            <span id="userEmail"></span>
-        </p>
-
-        <button id="saveBtn">
-            حفظ الاسم
-        </button>
-
-        <div id="message"></div>
-
-        <a class="home-btn" href="index.html">
-            العودة إلى الصفحة الرئيسية
-        </a>
-
-    </div>
+<h2>
+    الملف الشخصي 👤
+</h2>
 
 
-    <script type="module">
+<input
+    id="username"
+    type="text"
+    maxlength="30"
+    placeholder="اكتب اسمك"
+>
 
-        import { initializeApp }
-        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-        import {
-            getAuth,
-            onAuthStateChanged,
-            updateProfile
+<p class="email">
+
+    البريد الإلكتروني:
+
+    <br>
+
+    <span id="userEmail">
+        جارٍ التحميل...
+    </span>
+
+</p>
+
+
+<button id="saveBtn">
+    حفظ الاسم
+</button>
+
+
+<div id="message"></div>
+
+
+<a
+    class="home-btn"
+    href="index.html"
+>
+    🏠 العودة إلى الصفحة الرئيسية
+</a>
+```
+
+</div>
+
+<script type="module">
+
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    updateProfile,
+    setPersistence,
+    browserLocalPersistence
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+
+    authDomain:
+        "tawasuulna.firebaseapp.com",
+
+    projectId:
+        "tawasuulna",
+
+    storageBucket:
+        "tawasuulna.firebasestorage.app",
+
+    messagingSenderId:
+        "310730975553",
+
+    appId:
+        "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+
+    measurementId:
+        "G-6V0X5QY0DF"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+const usernameInput =
+    document.getElementById("username");
+
+
+const userEmail =
+    document.getElementById("userEmail");
+
+
+const avatar =
+    document.getElementById("avatar");
+
+
+const saveBtn =
+    document.getElementById("saveBtn");
+
+
+const message =
+    document.getElementById("message");
+
+
+/*
+    الحفاظ على تسجيل الدخول
+*/
+
+setPersistence(
+    auth,
+    browserLocalPersistence
+)
+.catch(error => {
+
+    console.error(
+        "Persistence Error:",
+        error
+    );
+
+});
+
+
+/*
+    تحميل بيانات المستخدم
+*/
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+
+        if (!user) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
         }
-        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-        import {
-            getFirestore,
-            doc,
-            setDoc,
-            getDoc,
-            serverTimestamp
-        }
-        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
-            authDomain: "tawasuulna.firebaseapp.com",
-            projectId: "tawasuulna",
-            storageBucket: "tawasuulna.firebasestorage.app",
-            messagingSenderId: "310730975553",
-            appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
-            measurementId: "G-6V0X5QY0DF"
-        };
+        userEmail.textContent =
+            user.email;
 
 
-        const app = initializeApp(firebaseConfig);
-
-        const auth = getAuth(app);
-
-        const db = getFirestore(app);
+        let currentName =
+            user.displayName || "";
 
 
-        const usernameInput = document.getElementById("username");
+        /*
+            محاولة قراءة الاسم من Firestore
+        */
 
-        const userEmail = document.getElementById("userEmail");
+        try {
 
-        const avatar = document.getElementById("avatar");
-
-        const saveBtn = document.getElementById("saveBtn");
-
-        const message = document.getElementById("message");
-
-
-        onAuthStateChanged(auth, async (user) => {
-
-            if (!user) {
-
-                window.location.href = "login.html";
-
-                return;
-
-            }
-
-
-            userEmail.textContent = user.email;
-
-
-            try {
-
-                const userDoc = await getDoc(
-                    doc(db, "users", user.uid)
+            const userDoc =
+                await getDoc(
+                    doc(
+                        db,
+                        "users",
+                        user.uid
+                    )
                 );
 
 
-                if (userDoc.exists()) {
+            if (
+                userDoc.exists()
+            ) {
 
-                    const data = userDoc.data();
+                const data =
+                    userDoc.data();
 
-                    if (data.name) {
 
-                        usernameInput.value = data.name;
+                if (data.name) {
 
-                        avatar.textContent =
-                            data.name.charAt(0).toUpperCase();
-
-                    }
-
-                }
-
-                else if (user.displayName) {
-
-                    usernameInput.value = user.displayName;
-
-                    avatar.textContent =
-                        user.displayName.charAt(0).toUpperCase();
-
-                }
-
-                else {
-
-                    avatar.textContent =
-                        user.email.charAt(0).toUpperCase();
+                    currentName =
+                        data.name;
 
                 }
 
             }
 
-            catch (error) {
+        }
 
-                console.error(error);
+        catch (error) {
 
-            }
+            console.error(
+                "User Data Error:",
+                error
+            );
 
-        });
-
-
-        saveBtn.addEventListener("click", async () => {
-
-            const user = auth.currentUser;
-
-            const username =
-                usernameInput.value.trim();
+        }
 
 
-            if (!username) {
+        /*
+            عرض الاسم
+        */
 
-                message.style.color = "red";
+        if (currentName) {
 
-                message.textContent =
-                    "اكتب اسمك أولًا.";
-
-                return;
-
-            }
+            usernameInput.value =
+                currentName;
 
 
-            try {
+            avatar.textContent =
+                currentName
+                    .charAt(0)
+                    .toUpperCase();
 
-                saveBtn.disabled = true;
+        }
 
-                saveBtn.textContent =
-                    "جارٍ الحفظ...";
+        else {
 
+            avatar.textContent =
+                user.email
+                    .charAt(0)
+                    .toUpperCase();
 
-                await updateProfile(user, {
+        }
 
-                    displayName: username
-
-                });
-
-
-                await setDoc(
-                    doc(db, "users", user.uid),
-
-                    {
-                        uid: user.uid,
-                        name: username,
-                        email: user.email,
-                        updatedAt: serverTimestamp()
-                    },
-
-                    {
-                        merge: true
-                    }
-
-                );
+    }
+);
 
 
-                avatar.textContent =
-                    username.charAt(0).toUpperCase();
+/*
+    تغيير الحرف فور كتابة الاسم
+*/
+
+usernameInput.addEventListener(
+    "input",
+    () => {
+
+        const name =
+            usernameInput.value.trim();
 
 
-                message.style.color = "green";
+        if (name) {
 
-                message.textContent =
-                    "تم حفظ الاسم بنجاح 🎉";
+            avatar.textContent =
+                name
+                    .charAt(0)
+                    .toUpperCase();
+
+        }
+
+    }
+);
 
 
-                setTimeout(() => {
+/*
+    حفظ الاسم
+*/
+
+saveBtn.addEventListener(
+    "click",
+    async () => {
+
+
+        const user =
+            auth.currentUser;
+
+
+        if (!user) {
+
+            message.style.color =
+                "red";
+
+            message.textContent =
+                "يجب تسجيل الدخول أولًا.";
+
+            return;
+
+        }
+
+
+        const username =
+            usernameInput.value.trim();
+
+
+        if (!username) {
+
+            message.style.color =
+                "red";
+
+            message.textContent =
+                "اكتب اسمك أولًا.";
+
+            return;
+
+        }
+
+
+        if (username.length < 2) {
+
+            message.style.color =
+                "red";
+
+            message.textContent =
+                "الاسم يجب أن يكون حرفين على الأقل.";
+
+            return;
+
+        }
+
+
+        try {
+
+
+            saveBtn.disabled =
+                true;
+
+
+            saveBtn.textContent =
+                "جارٍ الحفظ...";
+
+
+            /*
+                تحديث اسم Firebase Authentication
+            */
+
+            await updateProfile(
+                user,
+                {
+                    displayName:
+                        username
+                }
+            );
+
+
+            /*
+                حفظ الاسم في Firestore
+            */
+
+            await setDoc(
+
+                doc(
+                    db,
+                    "users",
+                    user.uid
+                ),
+
+                {
+
+                    uid:
+                        user.uid,
+
+                    name:
+                        username,
+
+                    email:
+                        user.email,
+
+                    updatedAt:
+                        serverTimestamp()
+
+                },
+
+                {
+                    merge: true
+                }
+
+            );
+
+
+            /*
+                تحديث الصورة
+            */
+
+            avatar.textContent =
+                username
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            message.style.color =
+                "green";
+
+
+            message.textContent =
+                "تم حفظ الاسم بنجاح 🎉";
+
+
+            /*
+                العودة للصفحة الرئيسية
+            */
+
+            setTimeout(
+                () => {
 
                     window.location.href =
                         "index.html";
 
-                }, 1500);
+                },
+                1200
+            );
 
 
-            }
+        }
 
-            catch (error) {
-
-                console.error(error);
-
-                saveBtn.disabled = false;
-
-                saveBtn.textContent =
-                    "حفظ الاسم";
+        catch (error) {
 
 
-                message.style.color = "red";
+            console.error(
+                "Save Profile Error:",
+                error
+            );
 
-                message.textContent =
-                    "حدث خطأ أثناء حفظ الاسم.";
 
-            }
+            saveBtn.disabled =
+                false;
 
-        });
 
-    </script>
+            saveBtn.textContent =
+                "حفظ الاسم";
+
+
+            message.style.color =
+                "red";
+
+
+            message.textContent =
+                "حدث خطأ أثناء حفظ الاسم.";
+
+        }
+
+    }
+);
+
+</script>
 
 </body>
+
 </html>
