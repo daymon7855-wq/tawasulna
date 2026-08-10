@@ -4,244 +4,258 @@
 
 <head>
 
+```
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>تسجيل الدخول - تواصلنا</title>
 
 <style>
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f2f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f2f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
 
-.box {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    width: 350px;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-}
+    .box {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 350px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
 
-h1 {
-    color: #2563eb;
-}
+    h1 {
+        color: #2563eb;
+    }
 
-input {
-    width: 90%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
+    input {
+        width: 90%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+    }
 
-button {
-    width: 97%;
-    padding: 12px;
-    margin-top: 10px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-}
+    button {
+        width: 97%;
+        padding: 12px;
+        margin-top: 10px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    }
 
-button:disabled {
-    background: #93b4f5;
-    cursor: not-allowed;
-}
+    button:disabled {
+        background: #93b4f5;
+        cursor: not-allowed;
+    }
 
-#message {
-    margin-top: 15px;
-    font-size: 15px;
-    font-weight: bold;
-    line-height: 1.6;
-}
+    #message {
+        margin-top: 15px;
+        font-size: 15px;
+        font-weight: bold;
+        line-height: 1.6;
+    }
 
-a {
-    display: block;
-    margin-top: 15px;
-    color: #2563eb;
-    text-decoration: none;
-}
+    a {
+        display: block;
+        margin-top: 15px;
+        color: #2563eb;
+        text-decoration: none;
+    }
 
 </style>
+```
 
 </head>
 
 <body>
 
+```
 <div class="box">
 
-<h1>تسجيل الدخول</h1>
+    <h1>تسجيل الدخول</h1>
 
-<input
-id="email"
-type="email"
-placeholder="البريد الإلكتروني"
+    <input
+        id="email"
+        type="email"
+        placeholder="البريد الإلكتروني"
+    >
 
->
+    <input
+        id="password"
+        type="password"
+        placeholder="كلمة المرور"
+    >
 
-<input
-id="password"
-type="password"
-placeholder="كلمة المرور"
+    <button id="loginBtn">
+        تسجيل الدخول
+    </button>
 
->
+    <div id="message"></div>
 
-<button id="loginBtn">
-    تسجيل الدخول
-</button>
+    <a href="signup.html">
+        إنشاء حساب جديد
+    </a>
 
-<div id="message"></div>
-
-<a href="signup.html">
-    إنشاء حساب جديد
-</a>
-
-<a href="index.html">
-    العودة إلى الصفحة الرئيسية
-</a>
+    <a href="index.html">
+        العودة إلى الصفحة الرئيسية
+    </a>
 
 </div>
 
+
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-    getAuth,
-    signInWithEmailAndPassword
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-
-const firebaseConfig = {
-
-    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEeIJc0",
-
-    authDomain: "tawasuulna.firebaseapp.com",
-
-    projectId: "tawasuulna",
-
-    storageBucket: "tawasuulna.firebasestorage.app",
-
-    messagingSenderId: "310730975553",
-
-    appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
-
-    measurementId: "G-6V0X5QY0DF"
-
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-
-const emailInput =
-    document.getElementById("email");
-
-const passwordInput =
-    document.getElementById("password");
-
-const loginBtn =
-    document.getElementById("loginBtn");
-
-const message =
-    document.getElementById("message");
-
-
-loginBtn.addEventListener("click", async () => {
-
-    const email =
-        emailInput.value.trim();
-
-    const password =
-        passwordInput.value;
-
-
-    if (!email || !password) {
-
-        message.style.color = "red";
-
-        message.textContent =
-            "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
-
-        return;
+    import {
+        getAuth,
+        signInWithEmailAndPassword
     }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-    loginBtn.disabled = true;
+    const firebaseConfig = {
 
-    loginBtn.textContent =
-        "جارٍ تسجيل الدخول...";
+        apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEeIJc0",
 
+        authDomain: "tawasuulna.firebaseapp.com",
 
-    message.style.color = "blue";
+        projectId: "tawasuulna",
 
-    message.textContent =
-        "جاري تسجيل الدخول...";
+        storageBucket: "tawasuulna.firebasestorage.app",
 
+        messagingSenderId: "310730975553",
 
-    try {
+        appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
 
-        await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
+        measurementId: "G-6V0X5QY0DF"
+
+    };
 
 
-        message.style.color = "green";
+    const app =
+        initializeApp(firebaseConfig);
 
-        message.textContent =
-            "تم تسجيل الدخول بنجاح 🎉";
-
-
-        setTimeout(() => {
-
-            window.location.href =
-                "index.html";
-
-        }, 700);
+    const auth =
+        getAuth(app);
 
 
-    } catch (error) {
+    const emailInput =
+        document.getElementById("email");
 
-        console.error(error);
+    const passwordInput =
+        document.getElementById("password");
 
-        loginBtn.disabled = false;
+    const loginBtn =
+        document.getElementById("loginBtn");
 
-        loginBtn.textContent =
-            "تسجيل الدخول";
+    const message =
+        document.getElementById("message");
 
 
-        message.style.color = "red";
+    loginBtn.addEventListener(
+        "click",
+        async () => {
 
-        message.innerHTML =
-            "❌ فشل تسجيل الدخول<br>" +
-            "<small>كود الخطأ: " +
-            error.code +
-            "</small>";
+            const email =
+                emailInput.value.trim();
 
-    }
+            const password =
+                passwordInput.value;
 
-});
+
+            if (!email || !password) {
+
+                message.style.color = "red";
+
+                message.textContent =
+                    "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
+
+                return;
+
+            }
+
+
+            loginBtn.disabled = true;
+
+            loginBtn.textContent =
+                "جارٍ تسجيل الدخول...";
+
+
+            message.style.color = "blue";
+
+            message.textContent =
+                "جاري تسجيل الدخول...";
+
+
+            try {
+
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+                message.style.color = "green";
+
+                message.textContent =
+                    "تم تسجيل الدخول بنجاح 🎉";
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "index.html";
+
+                }, 700);
+
+
+            } catch (error) {
+
+                console.error(
+                    "Firebase Login Error:",
+                    error
+                );
+
+
+                loginBtn.disabled = false;
+
+                loginBtn.textContent =
+                    "تسجيل الدخول";
+
+
+                message.style.color = "red";
+
+                message.innerHTML =
+                    "❌ فشل تسجيل الدخول<br>" +
+                    "<small>كود الخطأ: " +
+                    error.code +
+                    "</small>";
+
+            }
+
+        }
+    );
 
 </script>
+```
 
 </body>
 
