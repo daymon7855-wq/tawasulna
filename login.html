@@ -1,93 +1,118 @@
-```html
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>تسجيل الدخول - تواصلنا</title>
+```
+<title>تسجيل الدخول - تواصلنا</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f2f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+<style>
 
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 350px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f2f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
 
-        h1 {
-            color: #2563eb;
-        }
+    .box {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 350px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
 
-        input {
-            width: 90%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-        }
+    h1 {
+        color: #2563eb;
+    }
 
-        button {
-            width: 97%;
-            padding: 12px;
-            margin-top: 10px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+    input {
+        width: 90%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+    }
 
-        #message {
-            margin-top: 15px;
-            font-size: 15px;
-            font-weight: bold;
-        }
+    button {
+        width: 97%;
+        padding: 12px;
+        margin-top: 10px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    }
 
-        a {
-            display: block;
-            margin-top: 15px;
-            color: #2563eb;
-            text-decoration: none;
-        }
-    </style>
+    button:disabled {
+        background: #93b4f5;
+        cursor: not-allowed;
+    }
+
+    #message {
+        margin-top: 15px;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    a {
+        display: block;
+        margin-top: 15px;
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+</style>
+```
+
 </head>
 
 <body>
 
 <div class="box">
 
-    <h1>تسجيل الدخول</h1>
+```
+<h1>تسجيل الدخول</h1>
 
-    <input id="email" type="email" placeholder="البريد الإلكتروني">
+<input
+    id="email"
+    type="email"
+    placeholder="البريد الإلكتروني"
+>
 
-    <input id="password" type="password" placeholder="كلمة المرور">
+<input
+    id="password"
+    type="password"
+    placeholder="كلمة المرور"
+>
 
-    <button id="loginBtn">تسجيل الدخول</button>
+<button id="loginBtn">
+    تسجيل الدخول
+</button>
 
-    <div id="message"></div>
+<div id="message"></div>
 
-    <a href="signup.html">إنشاء حساب جديد</a>
+<a href="signup.html">
+    إنشاء حساب جديد
+</a>
 
-    <a href="index.html">العودة إلى الصفحة الرئيسية</a>
+<a href="index.html">
+    العودة إلى الصفحة الرئيسية
+</a>
+```
 
 </div>
-
 
 <script type="module">
 
@@ -96,19 +121,28 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
     getAuth,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+
+    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEeIJc0",
+
     authDomain: "tawasuulna.firebaseapp.com",
+
     projectId: "tawasuulna",
+
     storageBucket: "tawasuulna.firebasestorage.app",
+
     messagingSenderId: "310730975553",
+
     appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+
     measurementId: "G-6V0X5QY0DF"
+
 };
 
 
@@ -117,23 +151,57 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 
-const email = document.getElementById("email");
+const email =
+    document.getElementById("email");
 
-const password = document.getElementById("password");
+const password =
+    document.getElementById("password");
 
-const button = document.getElementById("loginBtn");
+const button =
+    document.getElementById("loginBtn");
 
-const message = document.getElementById("message");
+const message =
+    document.getElementById("message");
+
+
+let loginStarted = false;
+
+
+/*
+   Firebase يتأكد من حالة تسجيل الدخول.
+   لو المستخدم سجل الدخول بالفعل،
+   نرجعه للصفحة الرئيسية.
+*/
+
+onAuthStateChanged(auth, (user) => {
+
+    if (user && loginStarted) {
+
+        message.style.color = "green";
+
+        message.textContent =
+            "تم تسجيل الدخول بنجاح 🎉";
+
+        window.location.replace("index.html");
+
+    }
+
+});
 
 
 button.onclick = async function () {
 
-    message.style.color = "blue";
+    const userEmail =
+        email.value.trim();
 
-    message.textContent = "جاري تسجيل الدخول...";
+    const userPassword =
+        password.value;
 
 
-    if (email.value.trim() === "" || password.value === "") {
+    if (
+        userEmail === "" ||
+        userPassword === ""
+    ) {
 
         message.style.color = "red";
 
@@ -141,39 +209,84 @@ button.onclick = async function () {
             "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
 
         return;
+
     }
 
 
     try {
 
+        button.disabled = true;
+
+        button.textContent =
+            "جارٍ تسجيل الدخول...";
+
+        message.style.color = "blue";
+
+        message.textContent =
+            "جاري تسجيل الدخول...";
+
+
+        loginStarted = true;
+
+
         await signInWithEmailAndPassword(
             auth,
-            email.value.trim(),
-            password.value
+            userEmail,
+            userPassword
         );
 
 
-        message.style.color = "green";
-
-        message.textContent =
-            "تم تسجيل الدخول بنجاح 🎉";
-
-
-        setTimeout(function () {
-
-            window.location.href = "index.html";
-
-        }, 1500);
+        /*
+           onAuthStateChanged هي التي
+           ستنقلنا إلى index.html
+        */
 
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
+
+        loginStarted = false;
+
+        button.disabled = false;
+
+        button.textContent =
+            "تسجيل الدخول";
+
+
+        if (
+            error.code ===
+            "auth/invalid-credential"
+        ) {
+
+            message.textContent =
+                "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+        } else if (
+            error.code ===
+            "auth/user-not-found"
+        ) {
+
+            message.textContent =
+                "هذا الحساب غير موجود.";
+
+        } else if (
+            error.code ===
+            "auth/wrong-password"
+        ) {
+
+            message.textContent =
+                "كلمة المرور غير صحيحة.";
+
+        } else {
+
+            message.textContent =
+                "حدث خطأ أثناء تسجيل الدخول: " +
+                error.code;
+
+        }
 
         message.style.color = "red";
-
-        message.textContent =
-            "فشل تسجيل الدخول: " + error.code;
 
     }
 
@@ -182,5 +295,5 @@ button.onclick = async function () {
 </script>
 
 </body>
+
 </html>
-```
