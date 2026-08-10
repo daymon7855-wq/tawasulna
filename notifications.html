@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الإشعارات - تواصلنا</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+    color: #111;
+}
+
+header {
+    background: #2563eb;
+    color: white;
+    padding: 18px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.container {
+    width: 90%;
+    max-width: 700px;
+    margin: 30px auto;
+}
+
+.top-links {
+    margin-bottom: 20px;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 18px;
+    margin: 5px;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #1d4ed8;
+}
+
+.notification {
+    background: white;
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border-right: 5px solid #2563eb;
+}
+
+.notification.unread {
+    background: #eff6ff;
+}
+
+.notification-text {
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.notification-date {
+    margin-top: 8px;
+    color: #777;
+    font-size: 13px;
+}
+
+.empty {
+    background: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 15px;
+    color: #777;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+```
+<h1>🔔 الإشعارات</h1>
+```
+
+</header>
+
+<div class="container">
+
+```
+<div class="top-links">
+
+    <a class="button" href="index.html">
+        🏠 الرئيسية
+    </a>
+
+</div>
+
+
+<div id="notifications">
+
+    <div class="empty">
+        جارٍ تحميل الإشعارات...
+    </div>
+
+</div>
+```
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    orderBy,
+    onSnapshot,
+    doc,
+    updateDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+
+    authDomain: "tawasuulna.firebaseapp.com",
+
+    projectId: "tawasuulna",
+
+    storageBucket: "tawasuulna.firebasestorage.app",
+
+    messagingSenderId: "310730975553",
+
+    appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+
+    measurementId: "G-6V0X5QY0DF"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+const notificationsContainer =
+    document.getElementById("notifications");
+
+
+onAuthStateChanged(
+    auth,
+
+    (user) => {
+
+        if (!user) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const notificationsQuery =
+            query(
+                collection(db, "notifications"),
+
+                where(
+                    "toUserId",
+                    "==",
+                    user.uid
+                ),
+
+                orderBy(
+                    "createdAt",
+                    "desc"
+                )
+            );
+
+
+        onSnapshot(
+            notificationsQuery,
+
+            async (snapshot) => {
+
+                notificationsContainer.innerHTML =
+                    "";
+
+
+                if (snapshot.empty) {
+
+                    notificationsContainer.innerHTML =
+                        '<div class="empty">🔔 لا توجد إشعارات حتى الآن.</div>';
+
+                    return;
+
+                }
+
+
+                snapshot.forEach(
+                    (notificationDoc) => {
+
+                        const data =
+                            notificationDoc.data();
+
+
+                        const notification =
+                            document.createElement(
+                                "div"
+                            );
+
+                        notification.className =
+                            data.read
+                                ? "notification"
+                                : "notification unread";
+
+
+                        const text =
+                            document.createElement(
+                                "div"
+                            );
+
+                        text.className =
+                            "notification-text";
+
+
+                        if (
+                            data.type ===
+                            "like"
+                        ) {
+
+                            text.textContent =
+                                "❤️ " +
+                                (
+                                    data.fromUserName ||
+                                    "مستخدم"
+                                ) +
+                                " أعجب بمنشورك.";
+
+                        }
+
+                        else if (
+                            data.type ===
+                            "comment"
+                        ) {
+
+                            text.textContent =
+                                "💬 " +
+                                (
+                                    data.fromUserName ||
+                                    "مستخدم"
+                                ) +
+                                " كتب تعليقًا على منشورك.";
+
+                        }
+
+                        else {
+
+                            text.textContent =
+                                data.text ||
+                                "لديك إشعار جديد.";
+
+                        }
+
+
+                        const date =
+                            document.createElement(
+                                "div"
+                            );
+
+                        date.className =
+                            "notification-date";
+
+
+                        if (data.createdAt) {
+
+                            date.textContent =
+                                data.createdAt
+                                    .toDate()
+                                    .toLocaleString(
+                                        "ar-EG"
+                                    );
+
+                        }
+
+                        else {
+
+                            date.textContent =
+                                "الآن";
+
+                        }
+
+
+                        notification.appendChild(
+                            text
+                        );
+
+                        notification.appendChild(
+                            date
+                        );
+
+
+                        notification.addEventListener(
+                            "click",
+
+                            async () => {
+
+                                try {
+
+                                    await updateDoc(
+
+                                        doc(
+                                            db,
+                                            "notifications",
+                                            notificationDoc.id
+                                        ),
+
+                                        {
+                                            read: true
+                                        }
+
+                                    );
+
+                                }
+
+                                catch (error) {
+
+                                    console.error(
+                                        error
+                                    );
+
+                                }
+
+                            }
+
+                        );
+
+
+                        notificationsContainer.appendChild(
+                            notification
+                        );
+
+                    }
+
+                );
+
+            },
+
+            (error) => {
+
+                console.error(error);
+
+                notificationsContainer.innerHTML =
+                    '<div class="empty">حدث خطأ أثناء تحميل الإشعارات.</div>';
+
+            }
+
+        );
+
+    }
+
+);
+
+</script>
+
+</body>
+
+</html>
