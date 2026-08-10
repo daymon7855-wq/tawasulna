@@ -3,12 +3,10 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 ```
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>تسجيل الدخول - تواصلنا</title>
 
 <style>
@@ -83,177 +81,170 @@
 
 <body>
 
-```
 <div class="box">
 
-    <h1>تسجيل الدخول</h1>
+```
+<h1>تسجيل الدخول</h1>
 
-    <input
-        id="email"
-        type="email"
-        placeholder="البريد الإلكتروني"
-    >
+<input
+    id="email"
+    type="email"
+    placeholder="البريد الإلكتروني"
+>
 
-    <input
-        id="password"
-        type="password"
-        placeholder="كلمة المرور"
-    >
+<input
+    id="password"
+    type="password"
+    placeholder="كلمة المرور"
+>
 
-    <button id="loginBtn">
-        تسجيل الدخول
-    </button>
+<button id="loginBtn">
+    تسجيل الدخول
+</button>
 
-    <div id="message"></div>
+<div id="message"></div>
 
-    <a href="signup.html">
-        إنشاء حساب جديد
-    </a>
+<a href="signup.html">
+    إنشاء حساب جديد
+</a>
 
-    <a href="index.html">
-        العودة إلى الصفحة الرئيسية
-    </a>
+<a href="index.html">
+    العودة إلى الصفحة الرئيسية
+</a>
+```
 
 </div>
 
-
 <script type="module">
 
-    import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    import {
-        getAuth,
-        signInWithEmailAndPassword
+import {
+    getAuth,
+    signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+
+    authDomain: "tawasuulna.firebaseapp.com",
+
+    projectId: "tawasuulna",
+
+    storageBucket: "tawasuulna.firebasestorage.app",
+
+    messagingSenderId: "310730975553",
+
+    appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+
+    measurementId: "G-6V0X5QY0DF"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+const emailInput =
+    document.getElementById("email");
+
+const passwordInput =
+    document.getElementById("password");
+
+const loginBtn =
+    document.getElementById("loginBtn");
+
+const message =
+    document.getElementById("message");
+
+
+loginBtn.addEventListener("click", async () => {
+
+    const email =
+        emailInput.value.trim();
+
+    const password =
+        passwordInput.value;
+
+
+    if (!email || !password) {
+
+        message.style.color = "red";
+
+        message.textContent =
+            "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
+
+        return;
     }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-    const firebaseConfig = {
+    loginBtn.disabled = true;
 
-        apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEeIJc0",
+    loginBtn.textContent =
+        "جارٍ تسجيل الدخول...";
 
-        authDomain: "tawasuulna.firebaseapp.com",
+    message.style.color = "blue";
 
-        projectId: "tawasuulna",
-
-        storageBucket: "tawasuulna.firebasestorage.app",
-
-        messagingSenderId: "310730975553",
-
-        appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
-
-        measurementId: "G-6V0X5QY0DF"
-
-    };
+    message.textContent =
+        "جاري تسجيل الدخول...";
 
 
-    const app =
-        initializeApp(firebaseConfig);
+    try {
 
-    const auth =
-        getAuth(app);
-
-
-    const emailInput =
-        document.getElementById("email");
-
-    const passwordInput =
-        document.getElementById("password");
-
-    const loginBtn =
-        document.getElementById("loginBtn");
-
-    const message =
-        document.getElementById("message");
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
 
 
-    loginBtn.addEventListener(
-        "click",
-        async () => {
+        message.style.color = "green";
 
-            const email =
-                emailInput.value.trim();
-
-            const password =
-                passwordInput.value;
+        message.textContent =
+            "تم تسجيل الدخول بنجاح 🎉";
 
 
-            if (!email || !password) {
+        setTimeout(() => {
 
-                message.style.color = "red";
+            window.location.href =
+                "index.html";
 
-                message.textContent =
-                    "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
-
-                return;
-
-            }
+        }, 700);
 
 
-            loginBtn.disabled = true;
+    } catch (error) {
 
-            loginBtn.textContent =
-                "جارٍ تسجيل الدخول...";
-
-            message.style.color = "blue";
-
-            message.textContent =
-                "جاري تسجيل الدخول...";
+        console.error(
+            "Firebase Login Error:",
+            error
+        );
 
 
-            try {
+        loginBtn.disabled = false;
 
-                await signInWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
+        loginBtn.textContent =
+            "تسجيل الدخول";
 
 
-                message.style.color = "green";
+        message.style.color = "red";
 
-                message.textContent =
-                    "تم تسجيل الدخول بنجاح 🎉";
+        message.innerHTML =
+            "❌ فشل تسجيل الدخول<br>" +
+            "<small>كود الخطأ: " +
+            error.code +
+            "</small>";
 
+    }
 
-                setTimeout(() => {
-
-                    window.location.href =
-                        "index.html";
-
-                }, 700);
-
-
-            } catch (error) {
-
-                console.error(
-                    "Firebase Login Error:",
-                    error
-                );
-
-
-                loginBtn.disabled = false;
-
-                loginBtn.textContent =
-                    "تسجيل الدخول";
-
-
-                message.style.color = "red";
-
-                message.innerHTML =
-                    "❌ فشل تسجيل الدخول<br>" +
-                    "<small>كود الخطأ: " +
-                    error.code +
-                    "</small>";
-
-            }
-
-        }
-    );
+});
 
 </script>
-```
 
 </body>
 
