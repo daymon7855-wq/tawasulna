@@ -39,14 +39,23 @@ header h1 {
     padding: 30px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.avatar-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.avatar,
+.profile-image {
+    width: 110px;
+    height: 110px;
+    margin: auto;
+    border-radius: 50%;
 }
 
 .avatar {
-    width: 110px;
-    height: 110px;
-    margin: 0 auto 20px;
-    border-radius: 50%;
     background: #2563eb;
     color: white;
     display: flex;
@@ -56,11 +65,12 @@ header h1 {
     font-weight: bold;
 }
 
-h2 {
-    margin-bottom: 20px;
+.profile-image {
+    display: none;
+    object-fit: cover;
 }
 
-input {
+input[type="text"] {
     width: 90%;
     padding: 13px;
     margin: 15px 0;
@@ -69,6 +79,12 @@ input {
     font-size: 16px;
     text-align: center;
     box-sizing: border-box;
+}
+
+input[type="file"] {
+    width: 90%;
+    margin: 10px auto 15px;
+    font-size: 14px;
 }
 
 .email {
@@ -105,10 +121,6 @@ button:disabled {
     text-decoration: none;
 }
 
-.home-btn:hover {
-    text-decoration: underline;
-}
-
 #message {
     margin-top: 15px;
     font-weight: bold;
@@ -132,14 +144,35 @@ button:disabled {
 <div class="profile-box">
 
 ```
-<div class="avatar" id="avatar">
-    ؟
+<div class="avatar-container">
+
+    <div
+        class="avatar"
+        id="avatar"
+    >
+        ؟
+    </div>
+
+    <img
+        id="profileImage"
+        class="profile-image"
+        src=""
+        alt="الصورة الشخصية"
+    >
+
 </div>
 
 
 <h2>
     الملف الشخصي 👤
 </h2>
+
+
+<input
+    id="imageInput"
+    type="file"
+    accept="image/*"
+>
 
 
 <input
@@ -164,7 +197,7 @@ button:disabled {
 
 
 <button id="saveBtn">
-    حفظ الاسم
+    حفظ التغييرات
 </button>
 
 
@@ -182,7 +215,6 @@ button:disabled {
 </div>
 
 <script type="module">
-
 
 import {
     initializeApp
@@ -251,21 +283,27 @@ const db =
 const usernameInput =
     document.getElementById("username");
 
-
 const userEmail =
     document.getElementById("userEmail");
-
 
 const avatar =
     document.getElementById("avatar");
 
+const profileImage =
+    document.getElementById("profileImage");
+
+const imageInput =
+    document.getElementById("imageInput");
 
 const saveBtn =
     document.getElementById("saveBtn");
 
-
 const message =
     document.getElementById("message");
+
+
+let selectedImage =
+    null;
 
 
 /*
@@ -294,7 +332,6 @@ onAuthStateChanged(
     auth,
     async (user) => {
 
-
         if (!user) {
 
             window.location.href =
@@ -313,10 +350,6 @@ onAuthStateChanged(
             user.displayName || "";
 
 
-        /*
-            محاولة قراءة الاسم من Firestore
-        */
-
         try {
 
             const userDoc =
@@ -329,9 +362,7 @@ onAuthStateChanged(
                 );
 
 
-            if (
-                userDoc.exists()
-            ) {
+            if (userDoc.exists()) {
 
                 const data =
                     userDoc.data();
@@ -351,22 +382,16 @@ onAuthStateChanged(
         catch (error) {
 
             console.error(
-                "User Data Error:",
                 error
             );
 
         }
 
 
-        /*
-            عرض الاسم
-        */
-
         if (currentName) {
 
             usernameInput.value =
                 currentName;
-
 
             avatar.textContent =
                 currentName
@@ -384,12 +409,126 @@ onAuthStateChanged(
 
         }
 
+
+        /*
+            تحميل الصورة المحفوظة
+            في هذا المتصفح
+        */
+
+        const savedImage =
+            localStorage.getItem(
+                "tawasuulna_profile_image_" +
+                user.uid
+            );
+
+
+        if (savedImage) {
+
+            profileImage.src =
+                savedImage;
+
+            profileImage.style.display =
+                "block";
+
+            avatar.style.display =
+                "none";
+
+        }
+
     }
 );
 
 
 /*
-    تغيير الحرف فور كتابة الاسم
+    اختيار صورة
+*/
+
+imageInput.addEventListener(
+    "change",
+    (event) => {
+
+        const file =
+            event.target.files[0];
+
+
+        if (!file) {
+
+            return;
+
+        }
+
+
+        if (!file.type.startsWith("image/")) {
+
+            message.style.color =
+                "red";
+
+            message.textContent =
+                "اختار صورة فقط.";
+
+            imageInput.value =
+                "";
+
+            return;
+
+        }
+
+
+        /*
+            منع الصور الضخمة جدًا
+        */
+
+        if (
+            file.size >
+            3 * 1024 * 1024
+        ) {
+
+            message.style.color =
+                "red";
+
+            message.textContent =
+                "الصورة يجب أن تكون أقل من 3 ميجابايت.";
+
+            imageInput.value =
+                "";
+
+            return;
+
+        }
+
+
+        selectedImage =
+            file;
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function(e) {
+
+                profileImage.src =
+                    e.target.result;
+
+                profileImage.style.display =
+                    "block";
+
+                avatar.style.display =
+                    "none";
+
+            };
+
+
+        reader.readAsDataURL(file);
+
+    }
+);
+
+
+/*
+    تغيير حرف الصورة
+    عند كتابة الاسم
 */
 
 usernameInput.addEventListener(
@@ -414,13 +553,12 @@ usernameInput.addEventListener(
 
 
 /*
-    حفظ الاسم
+    حفظ التغييرات
 */
 
 saveBtn.addEventListener(
     "click",
     async () => {
-
 
         const user =
             auth.currentUser;
@@ -471,17 +609,15 @@ saveBtn.addEventListener(
 
         try {
 
-
             saveBtn.disabled =
                 true;
-
 
             saveBtn.textContent =
                 "جارٍ الحفظ...";
 
 
             /*
-                تحديث اسم Firebase Authentication
+                تحديث اسم Firebase
             */
 
             await updateProfile(
@@ -529,26 +665,43 @@ saveBtn.addEventListener(
 
 
             /*
-                تحديث الصورة
+                حفظ الصورة في المتصفح
             */
 
-            avatar.textContent =
-                username
-                    .charAt(0)
-                    .toUpperCase();
+            if (selectedImage) {
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    function(e) {
+
+                        localStorage.setItem(
+
+                            "tawasuulna_profile_image_" +
+                            user.uid,
+
+                            e.target.result
+
+                        );
+
+                    };
+
+
+                reader.readAsDataURL(
+                    selectedImage
+                );
+
+            }
 
 
             message.style.color =
                 "green";
 
-
             message.textContent =
-                "تم حفظ الاسم بنجاح 🎉";
+                "تم حفظ التغييرات بنجاح 🎉";
 
-
-            /*
-                العودة للصفحة الرئيسية
-            */
 
             setTimeout(
                 () => {
@@ -565,9 +718,8 @@ saveBtn.addEventListener(
 
         catch (error) {
 
-
             console.error(
-                "Save Profile Error:",
+                "Save Error:",
                 error
             );
 
@@ -575,17 +727,15 @@ saveBtn.addEventListener(
             saveBtn.disabled =
                 false;
 
-
             saveBtn.textContent =
-                "حفظ الاسم";
+                "حفظ التغييرات";
 
 
             message.style.color =
                 "red";
 
-
             message.textContent =
-                "حدث خطأ أثناء حفظ الاسم.";
+                "حدث خطأ أثناء حفظ التغييرات.";
 
         }
 
