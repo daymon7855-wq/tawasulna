@@ -3,10 +3,13 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 ```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
 <title>تسجيل الدخول - تواصلنا</title>
 
 <style>
@@ -26,12 +29,14 @@
         padding: 30px;
         border-radius: 12px;
         width: 350px;
+        max-width: 85%;
         text-align: center;
         box-shadow: 0 5px 20px rgba(0,0,0,0.08);
     }
 
     h1 {
         color: #2563eb;
+        margin-bottom: 25px;
     }
 
     input {
@@ -64,7 +69,7 @@
         margin-top: 15px;
         font-size: 15px;
         font-weight: bold;
-        line-height: 1.6;
+        line-height: 1.7;
     }
 
     a {
@@ -86,27 +91,35 @@
 ```
 <h1>تسجيل الدخول</h1>
 
+
 <input
     id="email"
     type="email"
     placeholder="البريد الإلكتروني"
+    autocomplete="email"
 >
+
 
 <input
     id="password"
     type="password"
     placeholder="كلمة المرور"
+    autocomplete="current-password"
 >
+
 
 <button id="loginBtn">
     تسجيل الدخول
 </button>
 
+
 <div id="message"></div>
+
 
 <a href="signup.html">
     إنشاء حساب جديد
 </a>
+
 
 <a href="index.html">
     العودة إلى الصفحة الرئيسية
@@ -117,13 +130,20 @@
 
 <script type="module">
 
+
 import { initializeApp }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+
 import {
+
     getAuth,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+
 }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
@@ -146,103 +166,229 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
+const app =
+    initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+
+const auth =
+    getAuth(app);
 
 
 const emailInput =
     document.getElementById("email");
 
+
 const passwordInput =
     document.getElementById("password");
 
+
 const loginBtn =
     document.getElementById("loginBtn");
+
 
 const message =
     document.getElementById("message");
 
 
-loginBtn.addEventListener("click", async () => {
+/*
+    لو المستخدم بالفعل مسجل دخول
+    لا نطلب منه تسجيل الدخول مرة أخرى.
+*/
 
-    const email =
-        emailInput.value.trim();
+onAuthStateChanged(
+    auth,
+    (user) => {
 
-    const password =
-        passwordInput.value;
+        if (user) {
 
+            message.style.color =
+                "green";
 
-    if (!email || !password) {
+            message.textContent =
+                "أنت مسجل الدخول بالفعل 🎉";
 
-        message.style.color = "red";
+            setTimeout(
+                () => {
 
-        message.textContent =
-            "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
+                    window.location.replace(
+                        "index.html"
+                    );
 
-        return;
+                },
+                500
+            );
+
+        }
+
     }
+);
 
 
-    loginBtn.disabled = true;
+/*
+    تسجيل الدخول
+*/
 
-    loginBtn.textContent =
-        "جارٍ تسجيل الدخول...";
-
-    message.style.color = "blue";
-
-    message.textContent =
-        "جاري تسجيل الدخول...";
+loginBtn.addEventListener(
+    "click",
+    async () => {
 
 
-    try {
-
-        await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
+        const email =
+            emailInput.value.trim();
 
 
-        message.style.color = "green";
-
-        message.textContent =
-            "تم تسجيل الدخول بنجاح 🎉";
+        const password =
+            passwordInput.value;
 
 
-        setTimeout(() => {
+        if (!email || !password) {
 
-            window.location.href =
-                "index.html";
+            message.style.color =
+                "red";
 
-        }, 700);
+            message.textContent =
+                "اكتب البريد الإلكتروني وكلمة المرور أولًا.";
 
+            return;
 
-    } catch (error) {
-
-        console.error(
-            "Firebase Login Error:",
-            error
-        );
+        }
 
 
-        loginBtn.disabled = false;
+        loginBtn.disabled = true;
 
         loginBtn.textContent =
-            "تسجيل الدخول";
+            "جارٍ تسجيل الدخول...";
 
 
-        message.style.color = "red";
+        message.style.color =
+            "blue";
 
-        message.innerHTML =
-            "❌ فشل تسجيل الدخول<br>" +
-            "<small>كود الخطأ: " +
-            error.code +
-            "</small>";
+        message.textContent =
+            "جاري تسجيل الدخول...";
+
+
+        try {
+
+
+            /*
+                تسجيل الدخول في Firebase
+            */
+
+            const result =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            /*
+                نتأكد أن المستخدم أصبح
+                مسجلًا فعلًا.
+            */
+
+            if (result.user) {
+
+                message.style.color =
+                    "green";
+
+                message.textContent =
+                    "تم تسجيل الدخول بنجاح 🎉";
+
+
+                /*
+                    إعادة تحميل الصفحة الرئيسية
+                    بدل فتح نسخة قديمة منها.
+                */
+
+                setTimeout(
+                    () => {
+
+                        window.location.replace(
+                            "index.html"
+                        );
+
+                    },
+                    700
+                );
+
+            }
+
+
+        } catch (error) {
+
+
+            console.error(
+                "Firebase Login Error:",
+                error
+            );
+
+
+            loginBtn.disabled = false;
+
+            loginBtn.textContent =
+                "تسجيل الدخول";
+
+
+            message.style.color =
+                "red";
+
+
+            if (
+                error.code ===
+                "auth/invalid-credential"
+            ) {
+
+                message.textContent =
+                    "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+            }
+
+            else if (
+                error.code ===
+                "auth/user-not-found"
+            ) {
+
+                message.textContent =
+                    "هذا الحساب غير موجود.";
+
+            }
+
+            else if (
+                error.code ===
+                "auth/wrong-password"
+            ) {
+
+                message.textContent =
+                    "كلمة المرور غير صحيحة.";
+
+            }
+
+            else if (
+                error.code ===
+                "auth/invalid-api-key"
+            ) {
+
+                message.textContent =
+                    "مفتاح Firebase غير صحيح.";
+
+            }
+
+            else {
+
+                message.innerHTML =
+                    "❌ حدث خطأ أثناء تسجيل الدخول<br>" +
+                    "<small>" +
+                    error.code +
+                    "</small>";
+
+            }
+
+        }
 
     }
+);
 
-});
 
 </script>
 
