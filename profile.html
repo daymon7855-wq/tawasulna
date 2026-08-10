@@ -1,0 +1,217 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>الملف الشخصي - تواصلنا</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+        }
+
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-box {
+            width: 90%;
+            max-width: 400px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            margin: auto;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .email {
+            color: #666;
+            margin: 15px 0;
+        }
+
+        button {
+            width: 95%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .home-btn {
+            display: block;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>تواصلنا</h1>
+    </header>
+
+    <div class="profile-box">
+
+        <div class="avatar" id="avatar">؟</div>
+
+        <h2>الملف الشخصي</h2>
+
+        <input
+            id="username"
+            type="text"
+            placeholder="اكتب اسمك"
+        >
+
+        <p class="email">
+            البريد الإلكتروني:
+            <span id="userEmail"></span>
+        </p>
+
+        <button id="saveBtn">
+            حفظ الاسم
+        </button>
+
+        <div id="message"></div>
+
+        <a class="home-btn" href="index.html">
+            العودة إلى الصفحة الرئيسية
+        </a>
+
+    </div>
+
+
+    <script type="module">
+
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+        import {
+            getAuth,
+            onAuthStateChanged,
+            updateProfile
+        }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+            authDomain: "tawasuulna.firebaseapp.com",
+            projectId: "tawasuulna",
+            storageBucket: "tawasuulna.firebasestorage.app",
+            messagingSenderId: "310730975553",
+            appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+            measurementId: "G-6V0X5QY0DF"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const usernameInput = document.getElementById("username");
+        const userEmail = document.getElementById("userEmail");
+        const avatar = document.getElementById("avatar");
+        const saveBtn = document.getElementById("saveBtn");
+        const message = document.getElementById("message");
+
+
+        onAuthStateChanged(auth, (user) => {
+
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            userEmail.textContent = user.email;
+
+            if (user.displayName) {
+                usernameInput.value = user.displayName;
+                avatar.textContent = user.displayName.charAt(0);
+            } else {
+                avatar.textContent = user.email.charAt(0).toUpperCase();
+            }
+
+        });
+
+
+        saveBtn.addEventListener("click", async () => {
+
+            const user = auth.currentUser;
+            const username = usernameInput.value.trim();
+
+            if (!username) {
+                message.style.color = "red";
+                message.textContent = "اكتب اسمك أولًا.";
+                return;
+            }
+
+            try {
+
+                await updateProfile(user, {
+                    displayName: username
+                });
+
+                avatar.textContent = username.charAt(0);
+
+                message.style.color = "green";
+                message.textContent = "تم حفظ الاسم بنجاح 🎉";
+
+            } catch (error) {
+
+                console.error(error);
+
+                message.style.color = "red";
+                message.textContent = "حدث خطأ أثناء حفظ الاسم.";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
+```
