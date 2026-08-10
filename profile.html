@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -72,6 +71,11 @@
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
+        }
+
+        button:disabled {
+            background: #93b4f5;
+            cursor: not-allowed;
         }
 
         .home-btn {
@@ -151,6 +155,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+
         const usernameInput = document.getElementById("username");
         const userEmail = document.getElementById("userEmail");
         const avatar = document.getElementById("avatar");
@@ -169,7 +174,7 @@
 
             if (user.displayName) {
                 usernameInput.value = user.displayName;
-                avatar.textContent = user.displayName.charAt(0);
+                avatar.textContent = user.displayName.charAt(0).toUpperCase();
             } else {
                 avatar.textContent = user.email.charAt(0).toUpperCase();
             }
@@ -182,26 +187,42 @@
             const user = auth.currentUser;
             const username = usernameInput.value.trim();
 
+
             if (!username) {
                 message.style.color = "red";
                 message.textContent = "اكتب اسمك أولًا.";
                 return;
             }
 
+
             try {
+
+                saveBtn.disabled = true;
+                saveBtn.textContent = "جارٍ الحفظ...";
+
 
                 await updateProfile(user, {
                     displayName: username
                 });
 
-                avatar.textContent = username.charAt(0);
+
+                avatar.textContent = username.charAt(0).toUpperCase();
 
                 message.style.color = "green";
                 message.textContent = "تم حفظ الاسم بنجاح 🎉";
 
+
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
+
+
             } catch (error) {
 
                 console.error(error);
+
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ الاسم";
 
                 message.style.color = "red";
                 message.textContent = "حدث خطأ أثناء حفظ الاسم.";
@@ -214,4 +235,3 @@
 
 </body>
 </html>
-```
