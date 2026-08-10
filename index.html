@@ -39,7 +39,7 @@
         .container p {
             font-size: 20px;
             color: #555;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
         }
 
         .button {
@@ -67,9 +67,14 @@
             display: block;
         }
 
-        #userEmail {
+        #userName {
             color: #2563eb;
             font-weight: bold;
+        }
+
+        #userEmail {
+            color: #666;
+            font-size: 16px;
         }
 
         #logoutBtn {
@@ -97,7 +102,6 @@
 
     <div class="container">
 
-        <!-- المستخدم غير مسجل الدخول -->
         <div id="guestArea">
 
             <h2>مرحبًا بك في تواصلنا 👋</h2>
@@ -117,26 +121,24 @@
         </div>
 
 
-        <!-- المستخدم مسجل الدخول -->
         <div id="userArea">
 
-            <h2>أهلًا بك في تواصلنا 👋</h2>
+            <h2>
+                أهلًا <span id="userName">بك</span> 👋
+            </h2>
 
             <p>
-                تم تسجيل دخولك بنجاح.
+                مرحبًا بك في تواصلنا، سعيدون بوجودك معنا.
             </p>
 
-            <p>
-                البريد الإلكتروني:
-                <span id="userEmail"></span>
-            </p>
+            <p id="userEmail"></p>
 
             <a class="button" href="profile.html">
                 👤 الملف الشخصي
             </a>
 
             <button id="logoutBtn" class="button">
-                تسجيل الخروج
+                🚪 تسجيل الخروج
             </button>
 
         </div>
@@ -179,6 +181,7 @@
 
         const guestArea = document.getElementById("guestArea");
         const userArea = document.getElementById("userArea");
+        const userName = document.getElementById("userName");
         const userEmail = document.getElementById("userEmail");
         const logoutBtn = document.getElementById("logoutBtn");
 
@@ -189,6 +192,12 @@
 
                 guestArea.style.display = "none";
                 userArea.style.display = "block";
+
+                if (user.displayName) {
+                    userName.textContent = user.displayName;
+                } else {
+                    userName.textContent = "بك";
+                }
 
                 userEmail.textContent = user.email;
 
