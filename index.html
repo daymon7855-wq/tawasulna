@@ -8,73 +8,84 @@
     <title>تواصلنا</title>
 
     <style>
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f2f4f8;
-            text-align: center;
+            color: #111;
         }
 
         header {
             background: #2563eb;
             color: white;
-            padding: 25px;
+            padding: 18px 20px;
+            text-align: center;
         }
 
         header h1 {
             margin: 0;
-            font-size: 32px;
+            font-size: 30px;
         }
 
         .container {
-            padding: 80px 20px;
-            min-height: 400px;
+            width: 90%;
+            max-width: 700px;
+            margin: 30px auto;
         }
 
-        .container h2 {
-            font-size: 32px;
-            color: #111;
+        #guestArea {
+            display: block;
+            text-align: center;
+            padding: 50px 10px;
         }
 
-        .container p {
-            font-size: 20px;
-            color: #555;
-            margin-bottom: 25px;
+        #guestArea h2 {
+            font-size: 30px;
         }
 
-        .button {
-            display: inline-block;
-            padding: 15px 30px;
-            margin: 10px;
+        #guestArea p {
             font-size: 18px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background: #1d4ed8;
+            color: #555;
         }
 
         #userArea {
             display: none;
         }
 
-        #guestArea {
-            display: block;
+        .welcome-box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
         #userName {
             color: #2563eb;
-            font-weight: bold;
         }
 
         #userEmail {
             color: #666;
+            font-size: 14px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 13px 22px;
+            margin: 8px;
             font-size: 16px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
         }
 
         #logoutBtn {
@@ -85,12 +96,96 @@
             background: #b91c1c;
         }
 
+        .post-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 120px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+
+        #publishBtn {
+            width: 100%;
+            margin: 12px 0 0 0;
+        }
+
+        #publishBtn:disabled {
+            background: #93b4f5;
+            cursor: not-allowed;
+        }
+
+        #postMessage {
+            text-align: center;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .posts-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        #posts {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .post-user {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 8px;
+        }
+
+        .post-content {
+            font-size: 17px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .post-date {
+            margin-top: 15px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .empty-posts {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: #777;
+        }
+
         footer {
+            margin-top: 40px;
             padding: 25px;
             background: #e5e7eb;
             color: #333;
-            font-size: 16px;
+            text-align: center;
         }
+
     </style>
 </head>
 
@@ -100,7 +195,11 @@
         <h1>تواصلنا</h1>
     </header>
 
+
     <div class="container">
+
+
+        <!-- المستخدم غير مسجل الدخول -->
 
         <div id="guestArea">
 
@@ -121,27 +220,70 @@
         </div>
 
 
+        <!-- المستخدم مسجل الدخول -->
+
         <div id="userArea">
 
-            <h2>
-                أهلًا <span id="userName">بك</span> 👋
-            </h2>
+            <div class="welcome-box">
 
-            <p>
-                مرحبًا بك في تواصلنا، سعيدون بوجودك معنا.
-            </p>
+                <h2>
+                    أهلًا <span id="userName">بك</span> 👋
+                </h2>
 
-            <p id="userEmail"></p>
+                <p>
+                    مرحبًا بك في تواصلنا، شارك أفكارك مع الجميع.
+                </p>
 
-            <a class="button" href="profile.html">
-                👤 الملف الشخصي
-            </a>
+                <p id="userEmail"></p>
 
-            <button id="logoutBtn" class="button">
-                🚪 تسجيل الخروج
-            </button>
+                <a class="button" href="profile.html">
+                    👤 الملف الشخصي
+                </a>
+
+                <button id="logoutBtn" class="button">
+                    🚪 تسجيل الخروج
+                </button>
+
+            </div>
+
+
+            <!-- كتابة منشور -->
+
+            <div class="post-box">
+
+                <h2>ماذا تفكر؟ 📝</h2>
+
+                <textarea
+                    id="postInput"
+                    maxlength="500"
+                    placeholder="اكتب منشورك هنا..."
+                ></textarea>
+
+                <button id="publishBtn" class="button">
+                    نشر المنشور
+                </button>
+
+                <div id="postMessage"></div>
+
+            </div>
 
         </div>
+
+
+        <!-- المنشورات -->
+
+        <h2 class="posts-title">
+            آخر المنشورات 📰
+        </h2>
+
+        <div id="posts">
+
+            <div class="empty-posts">
+                جارٍ تحميل المنشورات...
+            </div>
+
+        </div>
+
 
     </div>
 
@@ -163,6 +305,17 @@
         }
         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            query,
+            orderBy,
+            onSnapshot,
+            serverTimestamp
+        }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
@@ -176,40 +329,81 @@
 
 
         const app = initializeApp(firebaseConfig);
+
         const auth = getAuth(app);
 
+        const db = getFirestore(app);
 
-        const guestArea = document.getElementById("guestArea");
-        const userArea = document.getElementById("userArea");
-        const userName = document.getElementById("userName");
-        const userEmail = document.getElementById("userEmail");
-        const logoutBtn = document.getElementById("logoutBtn");
 
+        const guestArea =
+            document.getElementById("guestArea");
+
+        const userArea =
+            document.getElementById("userArea");
+
+        const userName =
+            document.getElementById("userName");
+
+        const userEmail =
+            document.getElementById("userEmail");
+
+        const logoutBtn =
+            document.getElementById("logoutBtn");
+
+        const postInput =
+            document.getElementById("postInput");
+
+        const publishBtn =
+            document.getElementById("publishBtn");
+
+        const postMessage =
+            document.getElementById("postMessage");
+
+        const posts =
+            document.getElementById("posts");
+
+
+        /* حالة تسجيل الدخول */
 
         onAuthStateChanged(auth, (user) => {
 
             if (user) {
 
                 guestArea.style.display = "none";
+
                 userArea.style.display = "block";
 
+
                 if (user.displayName) {
-                    userName.textContent = user.displayName;
+
+                    userName.textContent =
+                        user.displayName;
+
                 } else {
-                    userName.textContent = "بك";
+
+                    userName.textContent =
+                        user.email.split("@")[0];
+
                 }
 
-                userEmail.textContent = user.email;
 
-            } else {
+                userEmail.textContent =
+                    user.email;
+
+            }
+
+            else {
 
                 guestArea.style.display = "block";
+
                 userArea.style.display = "none";
 
             }
 
         });
 
+
+        /* تسجيل الخروج */
 
         logoutBtn.addEventListener("click", async () => {
 
@@ -219,7 +413,9 @@
 
                 alert("تم تسجيل الخروج بنجاح");
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.error(error);
 
@@ -228,6 +424,228 @@
             }
 
         });
+
+
+        /* نشر منشور */
+
+        publishBtn.addEventListener("click", async () => {
+
+            const user =
+                auth.currentUser;
+
+            const content =
+                postInput.value.trim();
+
+
+            if (!user) {
+
+                alert("يجب تسجيل الدخول أولًا.");
+
+                return;
+
+            }
+
+
+            if (!content) {
+
+                postMessage.style.color = "red";
+
+                postMessage.textContent =
+                    "اكتب منشورك أولًا.";
+
+                return;
+
+            }
+
+
+            try {
+
+                publishBtn.disabled = true;
+
+                publishBtn.textContent =
+                    "جارٍ النشر...";
+
+
+                const name =
+                    user.displayName ||
+                    user.email.split("@")[0];
+
+
+                await addDoc(
+                    collection(db, "posts"),
+
+                    {
+                        content: content,
+                        userId: user.uid,
+                        userName: name,
+                        userEmail: user.email,
+                        createdAt: serverTimestamp()
+                    }
+
+                );
+
+
+                postInput.value = "";
+
+
+                postMessage.style.color = "green";
+
+                postMessage.textContent =
+                    "تم نشر المنشور بنجاح 🎉";
+
+
+                setTimeout(() => {
+
+                    postMessage.textContent = "";
+
+                }, 2500);
+
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                postMessage.style.color = "red";
+
+                postMessage.textContent =
+                    "حدث خطأ أثناء نشر المنشور.";
+
+            }
+
+            finally {
+
+                publishBtn.disabled = false;
+
+                publishBtn.textContent =
+                    "نشر المنشور";
+
+            }
+
+        });
+
+
+        /* عرض المنشورات */
+
+        const postsQuery = query(
+
+            collection(db, "posts"),
+
+            orderBy("createdAt", "desc")
+
+        );
+
+
+        onSnapshot(
+
+            postsQuery,
+
+            (snapshot) => {
+
+                posts.innerHTML = "";
+
+
+                if (snapshot.empty) {
+
+                    const emptyBox =
+                        document.createElement("div");
+
+                    emptyBox.className =
+                        "empty-posts";
+
+                    emptyBox.textContent =
+                        "لا توجد منشورات حتى الآن. كن أول من ينشر 🎉";
+
+                    posts.appendChild(emptyBox);
+
+                    return;
+
+                }
+
+
+                snapshot.forEach((postDoc) => {
+
+                    const data =
+                        postDoc.data();
+
+
+                    const post =
+                        document.createElement("div");
+
+                    post.className =
+                        "post";
+
+
+                    const name =
+                        document.createElement("div");
+
+                    name.className =
+                        "post-user";
+
+                    name.textContent =
+                        "👤 " +
+                        (data.userName || "مستخدم");
+
+
+                    const content =
+                        document.createElement("div");
+
+                    content.className =
+                        "post-content";
+
+                    content.textContent =
+                        data.content || "";
+
+
+                    const date =
+                        document.createElement("div");
+
+                    date.className =
+                        "post-date";
+
+
+                    if (data.createdAt) {
+
+                        const postDate =
+                            data.createdAt.toDate();
+
+                        date.textContent =
+                            "📅 " +
+                            postDate.toLocaleString("ar-EG");
+
+                    }
+
+                    else {
+
+                        date.textContent =
+                            "📅 تم النشر الآن";
+
+                    }
+
+
+                    post.appendChild(name);
+
+                    post.appendChild(content);
+
+                    post.appendChild(date);
+
+                    posts.appendChild(post);
+
+                });
+
+            },
+
+            (error) => {
+
+                console.error(error);
+
+                posts.innerHTML =
+                    '<div class="empty-posts">حدث خطأ أثناء تحميل المنشورات.</div>';
+
+            }
+
+        );
 
     </script>
 
