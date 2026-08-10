@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الإشعارات - تواصلنا</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+    color: #111;
+}
+
+header {
+    background: #2563eb;
+    color: white;
+    padding: 18px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 700px;
+    margin: 30px auto;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 12px 18px;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.notifications-box {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.notification {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.notification:last-child {
+    border-bottom: none;
+}
+
+.notification-date {
+    display: block;
+    color: #888;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 30px 10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <h1>🔔 الإشعارات</h1>
+</header>
+
+<div class="container">
+
+    <a class="back-btn" href="index.html">
+        ← العودة للرئيسية
+    </a>
+
+    <div class="notifications-box">
+
+        <div id="notifications">
+
+            <div class="empty">
+                جارٍ تحميل الإشعارات...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    orderBy,
+    onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+
+    authDomain: "tawasuulna.firebaseapp.com",
+
+    projectId: "tawasuulna",
+
+    storageBucket: "tawasuulna.firebasestorage.app",
+
+    messagingSenderId: "310730975553",
+
+    appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+
+    measurementId: "G-6V0X5QY0DF"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+const notificationsDiv =
+    document.getElementById("notifications");
+
+
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    const notificationsQuery =
+        query(
+            collection(
+                db,
+                "notifications"
+            ),
+
+            where(
+                "recipientId",
+                "==",
+                user.uid
+            ),
+
+            orderBy(
+                "createdAt",
+                "desc"
+            )
+        );
+
+
+    onSnapshot(
+        notificationsQuery,
+
+        (snapshot) => {
+
+            notificationsDiv.innerHTML = "";
+
+
+            if (snapshot.empty) {
+
+                notificationsDiv.innerHTML =
+                    `
+                    <div class="empty">
+                        لا توجد إشعارات حتى الآن 🔔
+                    </div>
+                    `;
+
+                return;
+
+            }
+
+
+            snapshot.forEach(
+                (notificationDoc) => {
+
+                    const data =
+                        notificationDoc.data();
+
+
+                    const notification =
+                        document.createElement(
+                            "div"
+                        );
+
+                    notification.className =
+                        "notification";
+
+
+                    let text = "";
+
+
+                    if (
+                        data.type === "like"
+                    ) {
+
+                        text =
+                            "❤️ " +
+                            data.fromUserName +
+                            " أعجب بمنشورك";
+
+                    }
+
+
+                    else if (
+                        data.type === "comment"
+                    ) {
+
+                        text =
+                            "💬 " +
+                            data.fromUserName +
+                            " علّق على منشورك";
+
+                    }
+
+
+                    else {
+
+                        text =
+                            "🔔 لديك إشعار جديد";
+
+                    }
+
+
+                    const date =
+                        document.createElement(
+                            "span"
+                        );
+
+                    date.className =
+                        "notification-date";
+
+
+                    if (
+                        data.createdAt
+                    ) {
+
+                        date.textContent =
+                            data.createdAt
+                                .toDate()
+                                .toLocaleString(
+                                    "ar-EG"
+                                );
+
+                    } else {
+
+                        date.textContent =
+                            "الآن";
+
+                    }
+
+
+                    notification.textContent =
+                        text;
+
+
+                    notification.appendChild(
+                        date
+                    );
+
+
+                    notificationsDiv.appendChild(
+                        notification
+                    );
+
+                }
+            );
+
+        },
+
+        (error) => {
+
+            console.error(error);
+
+            notificationsDiv.innerHTML =
+                `
+                <div class="empty">
+                    حدث خطأ أثناء تحميل الإشعارات.
+                </div>
+                `;
+
+        }
+
+    );
+
+});
+
+</script>
+
+</body>
+
+</html>
