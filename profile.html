@@ -8,6 +8,7 @@
     <title>الملف الشخصي - تواصلنا</title>
 
     <style>
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -19,6 +20,10 @@
             color: white;
             padding: 20px;
             text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
         }
 
         .profile-box {
@@ -89,6 +94,7 @@
             margin-top: 15px;
             font-weight: bold;
         }
+
     </style>
 </head>
 
@@ -97,6 +103,7 @@
     <header>
         <h1>تواصلنا</h1>
     </header>
+
 
     <div class="profile-box">
 
@@ -140,6 +147,15 @@
         }
         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            getDoc,
+            serverTimestamp
+        }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
@@ -153,30 +169,81 @@
 
 
         const app = initializeApp(firebaseConfig);
+
         const auth = getAuth(app);
+
+        const db = getFirestore(app);
 
 
         const usernameInput = document.getElementById("username");
+
         const userEmail = document.getElementById("userEmail");
+
         const avatar = document.getElementById("avatar");
+
         const saveBtn = document.getElementById("saveBtn");
+
         const message = document.getElementById("message");
 
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
 
             if (!user) {
+
                 window.location.href = "login.html";
+
                 return;
+
             }
+
 
             userEmail.textContent = user.email;
 
-            if (user.displayName) {
-                usernameInput.value = user.displayName;
-                avatar.textContent = user.displayName.charAt(0).toUpperCase();
-            } else {
-                avatar.textContent = user.email.charAt(0).toUpperCase();
+
+            try {
+
+                const userDoc = await getDoc(
+                    doc(db, "users", user.uid)
+                );
+
+
+                if (userDoc.exists()) {
+
+                    const data = userDoc.data();
+
+                    if (data.name) {
+
+                        usernameInput.value = data.name;
+
+                        avatar.textContent =
+                            data.name.charAt(0).toUpperCase();
+
+                    }
+
+                }
+
+                else if (user.displayName) {
+
+                    usernameInput.value = user.displayName;
+
+                    avatar.textContent =
+                        user.displayName.charAt(0).toUpperCase();
+
+                }
+
+                else {
+
+                    avatar.textContent =
+                        user.email.charAt(0).toUpperCase();
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
             }
 
         });
@@ -185,47 +252,89 @@
         saveBtn.addEventListener("click", async () => {
 
             const user = auth.currentUser;
-            const username = usernameInput.value.trim();
+
+            const username =
+                usernameInput.value.trim();
 
 
             if (!username) {
+
                 message.style.color = "red";
-                message.textContent = "اكتب اسمك أولًا.";
+
+                message.textContent =
+                    "اكتب اسمك أولًا.";
+
                 return;
+
             }
 
 
             try {
 
                 saveBtn.disabled = true;
-                saveBtn.textContent = "جارٍ الحفظ...";
+
+                saveBtn.textContent =
+                    "جارٍ الحفظ...";
 
 
                 await updateProfile(user, {
+
                     displayName: username
+
                 });
 
 
-                avatar.textContent = username.charAt(0).toUpperCase();
+                await setDoc(
+                    doc(db, "users", user.uid),
+
+                    {
+                        uid: user.uid,
+                        name: username,
+                        email: user.email,
+                        updatedAt: serverTimestamp()
+                    },
+
+                    {
+                        merge: true
+                    }
+
+                );
+
+
+                avatar.textContent =
+                    username.charAt(0).toUpperCase();
+
 
                 message.style.color = "green";
-                message.textContent = "تم حفظ الاسم بنجاح 🎉";
+
+                message.textContent =
+                    "تم حفظ الاسم بنجاح 🎉";
 
 
                 setTimeout(() => {
-                    window.location.href = "index.html";
+
+                    window.location.href =
+                        "index.html";
+
                 }, 1500);
 
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.error(error);
 
                 saveBtn.disabled = false;
-                saveBtn.textContent = "حفظ الاسم";
+
+                saveBtn.textContent =
+                    "حفظ الاسم";
+
 
                 message.style.color = "red";
-                message.textContent = "حدث خطأ أثناء حفظ الاسم.";
+
+                message.textContent =
+                    "حدث خطأ أثناء حفظ الاسم.";
 
             }
 
