@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>تواصلنا</title>
 
     <style>
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -17,47 +20,52 @@
         header {
             background: #2563eb;
             color: white;
-            padding: 20px;
+            padding: 25px;
         }
 
         header h1 {
             margin: 0;
+            font-size: 32px;
         }
 
         .container {
-            padding: 60px 20px;
+            padding: 80px 20px;
+            min-height: 400px;
         }
 
         .container h2 {
             font-size: 32px;
+            color: #111;
         }
 
         .container p {
-            font-size: 18px;
-            color: #555;<button>إنشاء حساب</button>
-<button>تسجيل الدخول</button>
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 35px;
         }
 
-        button {
-            padding: 12px 25px;
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
             margin: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            font-size: 18px;
             background: #2563eb;
             color: white;
+            text-decoration: none;
+            border-radius: 10px;
         }
 
-        button:hover {
+        .button:hover {
             background: #1d4ed8;
         }
 
         footer {
-            margin-top: 50px;
-            padding: 20px;
+            padding: 25px;
             background: #e5e7eb;
+            color: #333;
+            font-size: 16px;
         }
+
     </style>
 </head>
 
@@ -68,16 +76,25 @@
     </header>
 
     <div class="container">
+
         <h2>مرحبًا بك في تواصلنا 👋</h2>
 
         <p>
             مكان يجمع الناس للتواصل ومشاركة الأفكار والمنشورات.
         </p>
 
-        <button>إنشاء حساب</button>
-        <button>تسجيل الدخول</button>
-    </div><footer>
-    © 2026 تواصلنا - جميع الحقوق محفوظة
-</footer>
+        <a class="button" href="signup.html">
+            إنشاء حساب
+        </a>
 
-  
+        <a class="button" href="login.html">
+            تسجيل الدخول
+        </a>
+
+    </div>
+
+    <footer>
+        © 2026 تواصلنا - جميع الحقوق محفوظة
+    </footer>
+
+</body
