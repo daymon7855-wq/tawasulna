@@ -1,1 +1,254 @@
-window.location.href = "index.html";
+window.location.href = "index.html";```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>تواصلنا</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+            text-align: center;
+        }
+
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 25px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .container {
+            padding: 80px 20px;
+            min-height: 400px;
+        }
+
+        .container h2 {
+            font-size: 32px;
+            color: #111;
+        }
+
+        .container p {
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 35px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        #userArea {
+            display: none;
+        }
+
+        #guestArea {
+            display: block;
+        }
+
+        #userEmail {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        #logoutBtn {
+            background: #dc2626;
+        }
+
+        #logoutBtn:hover {
+            background: #b91c1c;
+        }
+
+        footer {
+            padding: 25px;
+            background: #e5e7eb;
+            color: #333;
+            font-size: 16px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+        <h1>تواصلنا</h1>
+    </header>
+
+
+    <div class="container">
+
+        <!-- المستخدم غير مسجل الدخول -->
+
+        <div id="guestArea">
+
+            <h2>مرحبًا بك في تواصلنا 👋</h2>
+
+            <p>
+                مكان يجمع الناس للتواصل ومشاركة الأفكار والمنشورات.
+            </p>
+
+            <a class="button" href="signup.html">
+                إنشاء حساب
+            </a>
+
+            <a class="button" href="login.html">
+                تسجيل الدخول
+            </a>
+
+        </div>
+
+
+        <!-- المستخدم مسجل الدخول -->
+
+        <div id="userArea">
+
+            <h2>أهلًا بك في تواصلنا 👋</h2>
+
+            <p>
+                تم تسجيل دخولك بنجاح.
+            </p>
+
+            <p>
+                البريد الإلكتروني:
+                <span id="userEmail"></span>
+            </p>
+
+            <button id="logoutBtn" class="button">
+                تسجيل الخروج
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+        © 2026 تواصلنا - جميع الحقوق محفوظة
+    </footer>
+
+
+    <script type="module">
+
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+
+            authDomain: "tawasuulna.firebaseapp.com",
+
+            projectId: "tawasuulna",
+
+            storageBucket: "tawasuulna.firebasestorage.app",
+
+            messagingSenderId: "310730975553",
+
+            appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
+
+            measurementId: "G-6V0X5QY0DF"
+
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+
+
+        const guestArea = document.getElementById("guestArea");
+
+        const userArea = document.getElementById("userArea");
+
+        const userEmail = document.getElementById("userEmail");
+
+        const logoutBtn = document.getElementById("logoutBtn");
+
+
+        onAuthStateChanged(auth, (user) => {
+
+            if (user) {
+
+                // المستخدم مسجل الدخول
+
+                guestArea.style.display = "none";
+
+                userArea.style.display = "block";
+
+                userEmail.textContent = user.email;
+
+            }
+
+            else {
+
+                // المستخدم غير مسجل الدخول
+
+                guestArea.style.display = "block";
+
+                userArea.style.display = "none";
+
+            }
+
+        });
+
+
+        logoutBtn.addEventListener("click", async () => {
+
+            try {
+
+                await signOut(auth);
+
+                alert("تم تسجيل الخروج بنجاح");
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                alert("حدث خطأ أثناء تسجيل الخروج");
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+```
+
