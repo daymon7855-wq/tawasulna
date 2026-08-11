@@ -4,367 +4,424 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>المستخدمون - تواصلنا</title>
 
 <style>
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f2f4f8;
-    color: #111;
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f2f4f8;
 }
 
-header {
-    background: #2563eb;
-    color: white;
-    padding: 18px 20px;
-    text-align: center;
+header{
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    text-align:center;
 }
 
-header h1 {
-    margin: 0;
+.container{
+    width:90%;
+    max-width:700px;
+    margin:30px auto;
 }
 
-.container {
-    width: 90%;
-    max-width: 700px;
-    margin: 30px auto;
+.back-btn{
+    display:inline-block;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:10px;
+    margin-bottom:20px;
 }
 
-.back-btn {
-    display: inline-block;
-    padding: 12px 18px;
-    margin-bottom: 20px;
-    background: #2563eb;
-    color: white;
-    text-decoration: none;
-    border-radius: 10px;
+.users-box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
 }
 
-.users-box {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+.user-card{
+
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+    border-bottom:1px solid #eee;
+    cursor:pointer;
+
 }
 
-.user-card {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
+.user-card:hover{
+
+    background:#eef4ff;
+
 }
 
-.user-card:last-child {
-    border-bottom: none;
+
+.user-image{
+
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+
 }
 
-.user-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #2563eb;
+
+.user-avatar{
+
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+
 }
 
-.user-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #2563eb;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    font-weight: bold;
+
+.user-name{
+
+    font-size:18px;
+    font-weight:bold;
+
 }
 
-.user-info {
-    flex: 1;
+
+.user-email{
+
+    color:#777;
+    font-size:14px;
+
 }
 
-.user-name {
-    font-size: 18px;
-    font-weight: bold;
-}
 
-.user-email {
-    color: #777;
-    font-size: 14px;
-    margin-top: 5px;
-}
+.empty{
 
-.empty {
-    text-align: center;
-    color: #777;
-    padding: 30px 10px;
+    text-align:center;
+    color:#777;
+    padding:30px;
+
 }
 
 </style>
 
 </head>
 
+
 <body>
 
+
 <header>
-    <h1>👥 المستخدمون</h1>
+
+<h1>👥 المستخدمون</h1>
+
 </header>
+
+
 
 <div class="container">
 
-    <a class="back-btn" href="index.html">
-        ← العودة للرئيسية
-    </a>
 
-    <div class="users-box">
+<a class="back-btn" href="index.html">
+← العودة للرئيسية
+</a>
 
-        <div id="usersList">
 
-            <div class="empty">
-                جارٍ تحميل المستخدمين...
-            </div>
 
-        </div>
+<div class="users-box">
 
-    </div>
+
+<div id="usersList">
+
+<div class="empty">
+جارٍ تحميل المستخدمين...
+</div>
 
 </div>
 
 
+</div>
+
+
+</div>
+
+
+
+
 <script type="module">
+
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+
 import {
-    getAuth,
-    onAuthStateChanged
+
+getAuth,
+onAuthStateChanged
+
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
+
 import {
-    getFirestore,
-    collection,
-    onSnapshot
+
+getFirestore,
+collection,
+onSnapshot
+
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+
+
 const firebaseConfig = {
 
-    apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+apiKey: "AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
 
-    authDomain: "tawasuulna.firebaseapp.com",
+authDomain: "tawasuulna.firebaseapp.com",
 
-    projectId: "tawasuulna",
+projectId: "tawasuulna",
 
-    storageBucket: "tawasuulna.firebasestorage.app",
+storageBucket: "tawasuulna.firebasestorage.app",
 
-    messagingSenderId: "310730975553",
+messagingSenderId: "310730975553",
 
-    appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0",
-
-    measurementId: "G-6V0X5QY0DF"
+appId: "1:310730975553:web:a4d3b08381bd0b22e9d9c0"
 
 };
 
 
-const app = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+const app =
+initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+
+const auth =
+getAuth(app);
+
+
+const db =
+getFirestore(app);
+
 
 
 const usersList =
-    document.getElementById("usersList");
+document.getElementById("usersList");
 
 
-onAuthStateChanged(
-    auth,
 
-    (currentUser) => {
+let currentUser;
 
-        if (!currentUser) {
 
-            window.location.href =
-                "login.html";
 
-            return;
+onAuthStateChanged(auth,(user)=>{
 
-        }
 
+if(!user){
 
-        onSnapshot(
+location.href="login.html";
 
-            collection(
-                db,
-                "users"
-            ),
+return;
 
-            (snapshot) => {
+}
 
-                usersList.innerHTML =
-                    "";
 
+currentUser=user;
 
-                if (snapshot.empty) {
 
-                    usersList.innerHTML =
-                        `
-                        <div class="empty">
-                            لا يوجد مستخدمون حتى الآن.
-                        </div>
-                        `;
+loadUsers();
 
-                    return;
 
-                }
+});
 
 
-                snapshot.forEach(
-                    (userDoc) => {
 
-                        const data =
-                            userDoc.data();
 
 
-                        const card =
-                            document.createElement(
-                                "div"
-                            );
+function loadUsers(){
 
-                        card.className =
-                            "user-card";
 
+onSnapshot(
 
-                        if (data.photoURL) {
+collection(db,"users"),
 
-                            const image =
-                                document.createElement(
-                                    "img"
-                                );
+(snapshot)=>{
 
-                            image.className =
-                                "user-image";
 
-                            image.src =
-                                data.photoURL;
+usersList.innerHTML="";
 
-                            image.alt =
-                                "صورة المستخدم";
 
-                            card.appendChild(
-                                image
-                            );
 
-                        }
+snapshot.forEach((userDoc)=>{
 
-                        else {
 
-                            const avatar =
-                                document.createElement(
-                                    "div"
-                                );
+if(userDoc.id === currentUser.uid){
 
-                            avatar.className =
-                                "user-avatar";
+return;
 
-                            const name =
-                                data.name ||
-                                data.email ||
-                                "م";
+}
 
-                            avatar.textContent =
-                                name.charAt(0)
-                                    .toUpperCase();
 
-                            card.appendChild(
-                                avatar
-                            );
 
-                        }
+const data =
+userDoc.data();
 
 
-                        const info =
-                            document.createElement(
-                                "div"
-                            );
 
-                        info.className =
-                            "user-info";
+const card =
+document.createElement("div");
 
 
-                        const name =
-                            document.createElement(
-                                "div"
-                            );
+card.className =
+"user-card";
 
-                        name.className =
-                            "user-name";
 
-                        name.textContent =
-                            data.name ||
-                            "مستخدم";
 
+if(data.photoURL){
 
-                        const email =
-                            document.createElement(
-                                "div"
-                            );
 
-                        email.className =
-                            "user-email";
+const img =
+document.createElement("img");
 
-                        email.textContent =
-                            data.email ||
-                            "";
 
+img.className =
+"user-image";
 
-                        info.appendChild(name);
 
-                        info.appendChild(email);
+img.src =
+data.photoURL;
 
 
-                        card.appendChild(info);
+card.appendChild(img);
 
 
-                        usersList.appendChild(
-                            card
-                        );
 
-                    }
-                );
+}
 
-            },
+else{
 
 
-            (error) => {
+const avatar =
+document.createElement("div");
 
-                console.error(error);
 
-                usersList.innerHTML =
-                    `
-                    <div class="empty">
-                        حدث خطأ أثناء تحميل المستخدمين.
-                    </div>
-                    `;
+avatar.className =
+"user-avatar";
 
-            }
 
-        );
+avatar.textContent =
+(data.name || "م").charAt(0);
 
-    }
+
+
+card.appendChild(avatar);
+
+
+}
+
+
+
+
+
+const info =
+document.createElement("div");
+
+
+
+const name =
+document.createElement("div");
+
+
+name.className =
+"user-name";
+
+
+name.textContent =
+data.name || "مستخدم";
+
+
+
+const email =
+document.createElement("div");
+
+
+email.className =
+"user-email";
+
+
+email.textContent =
+data.email || "";
+
+
+
+info.appendChild(name);
+
+info.appendChild(email);
+
+
+card.appendChild(info);
+
+
+
+
+
+card.onclick = ()=>{
+
+
+window.location.href =
+"user-profile.html?id=" + userDoc.id;
+
+
+};
+
+
+
+
+usersList.appendChild(card);
+
+
+
+});
+
+
+
+},
+
+
+(error)=>{
+
+
+console.error(error);
+
+
+usersList.innerHTML =
+'<div class="empty">حدث خطأ أثناء تحميل المستخدمين.</div>';
+
+
+}
+
 
 );
 
+
+}
+
+
+
 </script>
+
 
 </body>
 
