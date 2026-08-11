@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>طلبات الصداقة - تواصلنا</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f2f4f8;
+}
+
+header{
+    background:#2563eb;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    width:90%;
+    max-width:700px;
+    margin:30px auto;
+}
+
+.box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+.request{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px;
+    border-bottom:1px solid #eee;
+}
+
+.info{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+}
+
+button{
+    border:none;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+    color:white;
+    margin:3px;
+}
+
+.accept{
+    background:#16a34a;
+}
+
+.reject{
+    background:#dc2626;
+}
+
+.empty{
+    text-align:center;
+    color:#777;
+    padding:30px;
+}
+
+.back{
+    display:inline-block;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+<h1>👥 طلبات الصداقة</h1>
+</header>
+
+
+<div class="container">
+
+<a class="back" href="index.html">
+← الرئيسية
+</a>
+
+
+<div class="box">
+
+<div id="requests">
+
+<div class="empty">
+جارٍ تحميل الطلبات...
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+getFirestore,
+collection,
+query,
+where,
+onSnapshot,
+doc,
+deleteDoc,
+setDoc,
+getDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyBLYMnh5lAj7VkJgG_VbZcwq-n7WEjIJc0",
+
+authDomain:"tawasuulna.firebaseapp.com",
+
+projectId:"tawasuulna",
+
+storageBucket:"tawasuulna.firebasestorage.app",
+
+messagingSenderId:"310730975553",
+
+appId:"1:310730975553:web:a4d3b08381bd0b22e9d9c0"
+
+};
+
+
+
+const app =
+initializeApp(firebaseConfig);
+
+
+const auth =
+getAuth(app);
+
+
+const db =
+getFirestore(app);
+
+
+
+const requestsBox =
+document.getElementById("requests");
+
+
+
+let currentUser;
+
+
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(!user){
+
+location.href="login.html";
+
+return;
+
+}
+
+
+currentUser=user;
+
+
+loadRequests();
+
+
+});
+
+
+
+
+
+function loadRequests(){
+
+
+const q =
+query(
+
+collection(
+db,
+"friendRequests"
+),
+
+where(
+"toUserId",
+"==",
+currentUser.uid
+),
+
+where(
+"status",
+"==",
+"pending"
+)
+
+);
+
+
+
+onSnapshot(q,(snapshot)=>{
+
+
+requestsBox.innerHTML="";
+
+
+
+if(snapshot.empty){
+
+requestsBox.innerHTML =
+'<div class="empty">لا توجد طلبات صداقة.</div>';
+
+return;
+
+}
+
+
+
+snapshot.forEach((requestDoc)=>{
+
+
+const data =
+requestDoc.data();
+
+
+
+const row =
+document.createElement("div");
+
+
+row.className="request";
+
+
+
+const info =
+document.createElement("div");
+
+
+info.className="info";
+
+
+
+const avatar =
+document.createElement("div");
+
+
+avatar.className="avatar";
+
+
+avatar.textContent =
+(data.fromUserName || "م").charAt(0);
+
+
+
+const name =
+document.createElement("div");
+
+
+name.textContent =
+data.fromUserName || "مستخدم";
+
+
+
+info.appendChild(avatar);
+
+info.appendChild(name);
+
+
+
+const buttons =
+document.createElement("div");
+
+
+
+const accept =
+document.createElement("button");
+
+
+accept.className="accept";
+
+
+accept.textContent="✅ قبول";
+
+
+
+const reject =
+document.createElement("button");
+
+
+reject.className="reject";
+
+
+reject.textContent="❌ رفض";
+
+
+
+accept.onclick=()=>acceptRequest(requestDoc.id,data);
+
+
+reject.onclick=()=>rejectRequest(requestDoc.id);
+
+
+
+buttons.appendChild(accept);
+
+buttons.appendChild(reject);
+
+
+
+row.appendChild(info);
+
+row.appendChild(buttons);
+
+
+
+requestsBox.appendChild(row);
+
+
+
+});
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+async function acceptRequest(id,data){
+
+
+await setDoc(
+
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+data.fromUserId
+),
+
+{
+
+userId:data.fromUserId,
+
+createdAt:serverTimestamp()
+
+}
+
+);
+
+
+
+await setDoc(
+
+doc(
+db,
+"users",
+data.fromUserId,
+"friends",
+currentUser.uid
+),
+
+{
+
+userId:currentUser.uid,
+
+createdAt:serverTimestamp()
+
+}
+
+);
+
+
+
+await deleteDoc(
+
+doc(
+db,
+"friendRequests",
+id
+)
+
+);
+
+
+alert("تم قبول طلب الصداقة");
+
+}
+
+
+
+
+
+async function rejectRequest(id){
+
+
+await deleteDoc(
+
+doc(
+db,
+"friendRequests",
+id
+)
+
+);
+
+
+alert("تم رفض الطلب");
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
