@@ -2,9 +2,11 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>الإشعارات - تواصلنا</title>
 
@@ -66,7 +68,7 @@ header h1 {
     display: block;
     color: #888;
     font-size: 13px;
-    margin-top: 5px;
+    margin-top: 7px;
 }
 
 .empty {
@@ -76,6 +78,7 @@ header h1 {
 }
 
 </style>
+
 </head>
 
 <body>
@@ -84,11 +87,13 @@ header h1 {
     <h1>🔔 الإشعارات</h1>
 </header>
 
+
 <div class="container">
 
     <a class="back-btn" href="index.html">
         ← العودة للرئيسية
     </a>
+
 
     <div class="notifications-box">
 
@@ -145,206 +150,267 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
+const app =
+    initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
 
-const db = getFirestore(app);
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
 
 const notificationsDiv =
     document.getElementById("notifications");
 
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(
+    auth,
 
-    if (!user) {
+    (user) => {
 
-        window.location.href =
-            "login.html";
+        if (!user) {
 
-        return;
+            window.location.href =
+                "login.html";
 
-    }
+            return;
 
-
-    const notificationsQuery =
-        query(
-            collection(db, "notifications"),
-
-            where(
-                "recipientId",
-                "==",
-                user.uid
-            )
-        );
+        }
 
 
-    onSnapshot(
-        notificationsQuery,
+        const notificationsQuery =
+            query(
 
-        (snapshot) => {
+                collection(
+                    db,
+                    "notifications"
+                ),
 
-            notificationsDiv.innerHTML = "";
+                where(
+                    "toUserId",
+                    "==",
+                    user.uid
+                )
+
+            );
 
 
-            if (snapshot.empty) {
+        onSnapshot(
+
+            notificationsQuery,
+
+            (snapshot) => {
+
+                notificationsDiv.innerHTML =
+                    "";
+
+
+                if (snapshot.empty) {
+
+                    notificationsDiv.innerHTML =
+                        `
+                        <div class="empty">
+                            لا توجد إشعارات حتى الآن 🔔
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                const notificationsArray =
+                    [];
+
+
+                snapshot.forEach(
+                    (notificationDoc) => {
+
+                        notificationsArray.push({
+
+                            id:
+                                notificationDoc.id,
+
+                            ...notificationDoc.data()
+
+                        });
+
+                    }
+                );
+
+
+                notificationsArray.sort(
+                    (a, b) => {
+
+                        const aTime =
+                            a.createdAt
+                                ? a.createdAt.toMillis()
+                                : 0;
+
+
+                        const bTime =
+                            b.createdAt
+                                ? b.createdAt.toMillis()
+                                : 0;
+
+
+                        return bTime - aTime;
+
+                    }
+                );
+
+
+                notificationsArray.forEach(
+                    (data) => {
+
+                        const notification =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        notification.className =
+                            "notification";
+
+
+                        let text =
+                            "";
+
+
+                        if (
+                            data.type ===
+                            "like"
+                        ) {
+
+                            text =
+                                "❤️ " +
+
+                                (
+                                    data.fromUserName ||
+                                    "أحد المستخدمين"
+                                )
+
+                                +
+
+                                " أعجب بمنشورك";
+
+                        }
+
+
+                        else if (
+                            data.type ===
+                            "comment"
+                        ) {
+
+                            text =
+                                "💬 " +
+
+                                (
+                                    data.fromUserName ||
+                                    "أحد المستخدمين"
+                                )
+
+                                +
+
+                                " علّق على منشورك";
+
+                        }
+
+
+                        else {
+
+                            text =
+                                "🔔 لديك إشعار جديد";
+
+                        }
+
+
+                        const textDiv =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        textDiv.textContent =
+                            text;
+
+
+                        const date =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        date.className =
+                            "notification-date";
+
+
+                        if (
+                            data.createdAt
+                        ) {
+
+                            date.textContent =
+                                data.createdAt
+                                    .toDate()
+                                    .toLocaleString(
+                                        "ar-EG"
+                                    );
+
+                        }
+
+                        else {
+
+                            date.textContent =
+                                "الآن";
+
+                        }
+
+
+                        notification.appendChild(
+                            textDiv
+                        );
+
+
+                        notification.appendChild(
+                            date
+                        );
+
+
+                        notificationsDiv.appendChild(
+                            notification
+                        );
+
+                    }
+                );
+
+            },
+
+
+            (error) => {
+
+                console.error(error);
+
 
                 notificationsDiv.innerHTML =
                     `
                     <div class="empty">
-                        لا توجد إشعارات حتى الآن 🔔
+                        حدث خطأ أثناء تحميل الإشعارات.
                     </div>
                     `;
 
-                return;
-
             }
 
+        );
 
-            const notificationsArray = [];
+    }
 
-
-            snapshot.forEach(
-                (notificationDoc) => {
-
-                    notificationsArray.push({
-                        id: notificationDoc.id,
-                        ...notificationDoc.data()
-                    });
-
-                }
-            );
-
-
-            notificationsArray.sort(
-                (a, b) => {
-
-                    const aTime =
-                        a.createdAt
-                            ? a.createdAt.toMillis()
-                            : 0;
-
-                    const bTime =
-                        b.createdAt
-                            ? b.createdAt.toMillis()
-                            : 0;
-
-                    return bTime - aTime;
-
-                }
-            );
-
-
-            notificationsArray.forEach(
-                (data) => {
-
-                    const notification =
-                        document.createElement(
-                            "div"
-                        );
-
-                    notification.className =
-                        "notification";
-
-
-                    let text = "";
-
-
-                    if (data.type === "like") {
-
-                        text =
-                            "❤️ " +
-                            (
-                                data.fromUserName ||
-                                "أحد المستخدمين"
-                            ) +
-                            " أعجب بمنشورك";
-
-                    }
-
-                    else if (
-                        data.type === "comment"
-                    ) {
-
-                        text =
-                            "💬 " +
-                            (
-                                data.fromUserName ||
-                                "أحد المستخدمين"
-                            ) +
-                            " علّق على منشورك";
-
-                    }
-
-                    else {
-
-                        text =
-                            "🔔 لديك إشعار جديد";
-
-                    }
-
-
-                    notification.textContent =
-                        text;
-
-
-                    const date =
-                        document.createElement(
-                            "span"
-                        );
-
-                    date.className =
-                        "notification-date";
-
-
-                    if (data.createdAt) {
-
-                        date.textContent =
-                            data.createdAt
-                                .toDate()
-                                .toLocaleString(
-                                    "ar-EG"
-                                );
-
-                    } else {
-
-                        date.textContent =
-                            "الآن";
-
-                    }
-
-
-                    notification.appendChild(
-                        date
-                    );
-
-                    notificationsDiv.appendChild(
-                        notification
-                    );
-
-                }
-            );
-
-        },
-
-        (error) => {
-
-            console.error(error);
-
-            notificationsDiv.innerHTML =
-                `
-                <div class="empty">
-                    حدث خطأ أثناء تحميل الإشعارات.
-                </div>
-                `;
-
-        }
-
-    );
-
-});
+);
 
 </script>
 
 </body>
+
 </html>
